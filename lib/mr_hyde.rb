@@ -9,11 +9,6 @@ module MrHyde
         "Hello you!"
       end
 
-      def blog(action, opts)
-        if :new == action
-          Jekyll::Commands::New.process opts[:path]
-        end
-      end
     end
   end
 end
