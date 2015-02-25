@@ -17,7 +17,7 @@ module MrHyde
       def create(args)
         return false if check_blog(args[:name], :exist?, "#{args[:name]} blog already exist")
 
-        Jekyll::Commands::New.process [File.join(MrHyde.configuration.source_path, args[:name])]
+        Jekyll::Commands::New.process [File.join(MrHyde.configuration.sources, args[:name])]
         exist? args[:name] 
       rescue Exception => e
         @logger.error "cannot create blog: #{e}"
@@ -32,8 +32,8 @@ module MrHyde
       def remove(args)
         return false if not check_blog(args[:name], :exist?, "#{args[:name]} cannot be removed, blog does not exist")
 
-        FileUtils.remove_dir File.join(MrHyde.configuration.source_path, args[:name])
-        @logger.debug "#{args[:name]} blog removed properly from the root path#{MrHyde.configuration.root_path}"
+        FileUtils.remove_dir File.join(MrHyde.configuration.sources, args[:name])
+        @logger.debug "#{args[:name]} blog removed properly from the root path#{MrHyde.configuration.root}"
         not exist? args[:name]
       rescue Exception => e
         @logger.error "cannot remove the blog: #{e}"
@@ -48,8 +48,8 @@ module MrHyde
       def build(args)
         return false if check_blog(args[:name], :built?, "#{args[:name]} cannot be built, blog already built")
 
-        Jekyll::Commands::Build.process 'source': File.join(MrHyde.configuration.source_path, args[:name]), 
-          'destination': File.join(MrHyde.configuration.destination_path, args[:name])
+        Jekyll::Commands::Build.process 'source': File.join(MrHyde.configuration.sources, args[:name]), 
+          'destination': File.join(MrHyde.configuration.destination, args[:name])
         built? args[:name]
       rescue Exception => e
         @logger.error "cannot build site: #{args[:name]}: #{e}"
@@ -57,11 +57,11 @@ module MrHyde
       end
 
       def exist?(blog_name)
-        File.exist? File.join(MrHyde.configuration.source_path, blog_name)
+        File.exist? File.join(MrHyde.configuration.sources, blog_name)
       end
         
       def built?(blog_name)
-        File.exist? File.join(MrHyde.configuration.destination_path, blog_name)
+        File.exist? File.join(MrHyde.configuration.destination, blog_name)
       end
 
       private

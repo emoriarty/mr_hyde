@@ -15,15 +15,13 @@ describe "Blog" do
   describe "external file configuration" do
   end
 
-  describe "runtime configuration " do
+  describe "with runtime configuration " do
     before do
-      MrHyde.configure do |config|
-        config.root_path = tmp_dir
-      end
+      MrHyde.configure
     end
 
     after do 
-      FileUtils.remove_dir tmp_dir
+      FileUtils.remove_dir MrHyde.configuration.root
     end
 
     it "can create a single blog" do

@@ -5,32 +5,29 @@ module MrHyde
   # root_name: root folder name
   #
   class Configuration
-    attr_accessor :root_name, 
-      :root_path, 
-      :source_name, 
-      :destination_name 
+
+    DEFAULTS = {
+      'root' => File.join(Dir.pwd, 'mr_hyde'),
+      'sources' => File.join(Dir.pwd, 'mr_hyde', 'sources'),
+      'destination' => File.join(Dir.pwd, 'mr_hyde', 'sites'),
+      'config_file' => '_config.yml'
+    }
+
+    attr_accessor :root, :sources, :destination, :file
 
     def initialize
-      @root_name = "mr_hyde"
-      @source_name = "sources"
-      @destination_name = "sites"
-      @root_path = File.join(Dir.home, @root_name)
+      @root = DEFAULTS['root']
+      @sources = DEFAULTS['sources']
+      @destination = DEFAULTS['destination']
+      @file = DEFAULTS['config_file']
     end
 
     def source_path
-      @source_path || File.join(@root_path, @source_name)
+      sources
     end
 
     def destination_path
-      @destination_path || File.join(@root_path, @destination_name)
-    end
-
-    def source_path=(new_source)
-      @source_path = new_source
-    end
-
-    def destination_path=(new_destination)
-      @destination_path = (new_destination)
+      destination
     end
   end
 end
