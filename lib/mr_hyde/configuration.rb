@@ -4,7 +4,13 @@ module MrHyde
   # root_path: user folder
   # root_name: root folder name
   #
-  class Configuration
+  class Configuration < Hash
+    DEFAULTS = {
+      'root': 'mr_hyde',
+      'source': 'sources',
+      'destination': 'sites',
+      'root_path': File.join(Dir.home, @root_name)
+    }
     attr_accessor :root_name, 
       :root_path, 
       :source_name, 
