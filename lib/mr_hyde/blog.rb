@@ -15,12 +15,12 @@ module MrHyde
       # Returns
       #   boolean
       def create(args)
-        return false if check_blog(args[:name]) { @logger.debug "#{args[:name]} blog already exist" }
+        return false if check_blog(args[:name], :exist?, "#{args[:name]} blog already exist")
 
         Jekyll::Commands::New.process [File.join(MrHyde.configuration.source_path, args[:name])]
         exist? args[:name] 
       rescue Exception => e
-        @logger.error "cannot create blog, #{e}"
+        @logger.error "cannot create blog: #{e}"
         false
       end
 
@@ -30,30 +30,29 @@ module MrHyde
       # Returns
       #   boolean
       def remove(args)
-        if not exist? args[:name]
-          @logger.debug "#{args[:name]} cannot be removed, blog does not exist"
-          return false
-        end
+        return false if not check_blog(args[:name], :exist?, "#{args[:name]} cannot be removed, blog does not exist")
 
         FileUtils.remove_dir File.join(MrHyde.configuration.source_path, args[:name])
         @logger.debug "#{args[:name]} blog removed properly from the root path#{MrHyde.configuration.root_path}"
         not exist? args[:name]
-      rescue
-        @logger.error "cannot remove the blog"
+      rescue Exception => e
+        @logger.error "cannot remove the blog: #{e}"
         false
       end
 
+      # Builds the blog
+      # Params:
+      #   Hash[:path] (String)
+      # Returns
+      #   boolean
       def build(args)
-        if built? args[:name]
-          @logger.debug "#{args[:name]} cannot be built, blog already built"
-          return false
-        end
+        return false if check_blog(args[:name], :built?, "#{args[:name]} cannot be built, blog already built")
 
         Jekyll::Commands::Build.process 'source': File.join(MrHyde.configuration.source_path, args[:name]), 
           'destination': File.join(MrHyde.configuration.destination_path, args[:name])
         built? args[:name]
-      rescue
-        @logger.error "cannot build site: #{args[:name]}"
+      rescue Exception => e
+        @logger.error "cannot build site: #{args[:name]}: #{e}"
         false
       end
 
@@ -67,11 +66,12 @@ module MrHyde
 
       private
 
-      def check_blog(blog_name)
-        if not exist? blog_name
-          yield
+      def check_blog(blog_name, method, message)
+        if not send(method, blog_name)
+          @logger.debug message
           return false
         end
+        true
       end
 
     end
