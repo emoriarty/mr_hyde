@@ -1,22 +1,20 @@
-require 'jekyll/commands/new'
+require "fileutils"
+
+require "mr_hyde/configuration"
+require "mr_hyde/jekyll/new"
+require "mr_hyde/command"
 
 module MrHyde
   module Commands
-    class New < Jekyll::Commands::New
+    class New < MrHyde::Command
       class << self
-        def template
-          site_template
+        def process
+          FileUtils.mkdir_p(configuration.sources) unless File.exist?(configuration.sources)
+          FileUtils.mkdir_p(configuration.destination) unless File.exist?(configuration.destination)
+          FileUtils.copy_file MrHyde::Jekyll::New.default_config_file, 
+            File.join(configuration.root, configuration.file)
         end
-
-        def default_config_file
-          File.join template, '_config.yml'
-        end
-
-        def create_sample_site
-          create_sample_files
-        end
-
-     end
+      end
     end
   end
 end

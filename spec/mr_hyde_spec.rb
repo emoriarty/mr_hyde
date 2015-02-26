@@ -20,5 +20,9 @@ describe "MrHyde" do
       File.exist?(MrHyde.configuration.destination).must_be :==, true
       File.exist?(File.join(MrHyde.configuration.root,  MrHyde.configuration.file)).must_be :==, true
     end
+
+    it "cannot create over an existing project" do
+
+    end
   end
 end
