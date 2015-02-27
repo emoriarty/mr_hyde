@@ -14,7 +14,7 @@ module MrHyde
 
     # Creates the folders for the sources and destination, 
     # by default will be created under root folder.
-    # Copies the default _config.yml for all blogs go the same root folder.
+    # Copies the default _config.yml for all blogs, in root folder.
     #
     def create
       Commands::New.process

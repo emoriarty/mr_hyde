@@ -9,7 +9,7 @@ describe "MrHyde" do
   end
 
   after do
-    FileUtils.remove_dir MrHyde.configure.root 
+    FileUtils.remove_dir MrHyde.configuration.root 
   end
 
   describe "default configuration" do

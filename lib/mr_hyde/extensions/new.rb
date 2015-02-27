@@ -1,11 +1,9 @@
 require 'jekyll/command'
 require 'jekyll/commands/new'
 
-def new_class; Jekyll::Commands::New; end
-
 module MrHyde
-  module Jekyll
-    class New < new_class 
+  module Extensions
+    class New < Jekyll::Commands::New 
       class << self
         def template
           site_template
