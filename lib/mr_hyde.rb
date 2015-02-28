@@ -2,6 +2,11 @@ require "mr_hyde/version"
 require "mr_hyde/configuration"
 require "mr_hyde/commands/new"
 
+require "logger"
+
+require "jekyll/stevenson"
+require "jekyll/log_adapter"
+
 module MrHyde
   class << self
     attr_accessor :configuration
@@ -9,7 +14,13 @@ module MrHyde
     def configure
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
-      self.configuration
+    end
+
+    # Public: Fetch the logger instance for this Jekyll process.
+    #
+    # Returns the LogAdapter instance.
+    def logger
+      Jekyll.logger
     end
 
     # Creates the folders for the sources and destination, 

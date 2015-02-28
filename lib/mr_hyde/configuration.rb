@@ -10,16 +10,19 @@ module MrHyde
       'root' => File.join(Dir.pwd, 'mr_hyde'),
       'sources' => File.join(Dir.pwd, 'mr_hyde', 'sources'),
       'destination' => File.join(Dir.pwd, 'mr_hyde', 'sites'),
-      'config_file' => '_config.yml'
+      'config_file' => '_mrhyde.yml',
+      'jekyll_config_file' => '_jekyll.yml'
     }
 
-    attr_accessor :root, :sources, :destination, :file
+    attr_accessor :root, :sources, :destination, :config_file, :jekyll_config_file
 
     def initialize
       @root = DEFAULTS['root']
       @sources = DEFAULTS['sources']
       @destination = DEFAULTS['destination']
-      @file = DEFAULTS['config_file']
+      @config_file = DEFAULTS['config_file']
+      @jekyll_config_file = DEFAULTS['jekyll_config_file']
+
     end
 
     def source_path

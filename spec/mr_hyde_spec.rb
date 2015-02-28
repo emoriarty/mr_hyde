@@ -18,11 +18,15 @@ describe "MrHyde" do
       File.exist?(MrHyde.configuration.root).must_be :==, true
       File.exist?(MrHyde.configuration.sources).must_be :==, true
       File.exist?(MrHyde.configuration.destination).must_be :==, true
-      File.exist?(File.join(MrHyde.configuration.root,  MrHyde.configuration.file)).must_be :==, true
+      File.exist?(File.join(MrHyde.configuration.root,  MrHyde.configuration.config_file)).must_be :==, true
+      File.exist?(File.join(MrHyde.configuration.root,  MrHyde.configuration.jekyll_config_file)).must_be :==, true
     end
 
     it "cannot create over an existing project" do
-
+      MrHyde.create
+      lambda { MrHyde.create }.must_raise SystemExit
     end
+
+    
   end
 end
