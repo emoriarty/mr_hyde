@@ -1,6 +1,7 @@
 require "mr_hyde/version"
 require "mr_hyde/configuration"
 require "mr_hyde/commands/new"
+require "mr_hyde/commands/build"
 
 require "logger"
 
@@ -27,8 +28,13 @@ module MrHyde
     # by default will be created under root folder.
     # Copies the default _config.yml for all blogs, in root folder.
     #
-    def create
-      Commands::New.process
+    def create(action = nil, opts = {})
+      opts[:type] = action
+      Commands::New.process opts    
+    end
+
+    def build(opts = {})
+      Commands::Build.process opts
     end
   end
 

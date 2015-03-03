@@ -1,26 +1,31 @@
 require "jekyll"
 require "fileutils"
-require "logger"
+require "mr_hyde"
+require "mr_hyde/configuration"
 
 # TODO: The site place must be taken from the default config or the one provided by user
 module MrHyde
   class Blog
-    @logger = Logger.new(STDOUT)
-    @logger.level = Logger::INFO
     
     class << self
       # Creates the directory and necessary files for the blog
       # Options
-      #   :name => blog's name
+      #   :name
+      #     String => creates the concrete blog
+      #     Array[String] => creates the correspondings blog names
       # Returns
       #   boolean
-      def create(args)
-        return false if check_blog(args[:name], :exist?, "#{args[:name]} blog already exist")
+      def create(opts)
+        return false unless site?
+        return false if opts[:name].nil? or opts[:name].empty?
 
-        Jekyll::Commands::New.process [File.join(MrHyde.configuration.sources, args[:name])]
-        exist? args[:name] 
+        if opts[:name].kind_of? Array
+          opts.delete(:name).each { |bn| create_blog(opts.merge({ :name => bn  })) }
+        elsif opts[:name].kind_of? String
+          create_blog opts
+        end
       rescue Exception => e
-        @logger.error "cannot create blog: #{e}"
+        MrHyde.logger.error "cannot create blog: #{e}"
         false
       end
 
@@ -29,31 +34,42 @@ module MrHyde
       #   Hash[:path] (String)
       # Returns
       #   boolean
-      def remove(args)
-        return false if not check_blog(args[:name], :exist?, "#{args[:name]} cannot be removed, blog does not exist")
+      def remove(opts)
+        return false if not check_blog(opts[:name], :exist?, "#{opts[:name]} cannot be removed, blog does not exist")
 
-        FileUtils.remove_dir File.join(MrHyde.configuration.sources, args[:name])
-        @logger.debug "#{args[:name]} blog removed properly from the root path#{MrHyde.configuration.root}"
-        not exist? args[:name]
+        FileUtils.remove_dir File.join(MrHyde.configuration.sources, opts[:name])
+        MrHyde.logger.debug "#{opts[:name]} blog removed properly from the root path#{MrHyde.configuration.root}"
+        not exist? opts[:name]
       rescue Exception => e
-        @logger.error "cannot remove the blog: #{e}"
+        MrHyde.logger.error "cannot remove the blog: #{e}"
         false
       end
 
       # Builds the blog
       # Params:
-      #   Hash[:path] (String)
+      #   :name
+      #     String => builds the concrete blog
+      #     Array[String] => builds the correspondings blog names
+      #     empty => It builds all blogs
       # Returns
       #   boolean
-      def build(args)
-        return false if check_blog(args[:name], :built?, "#{args[:name]} cannot be built, blog already built")
-
-        Jekyll::Commands::Build.process 'source': File.join(MrHyde.configuration.sources, args[:name]), 
-          'destination': File.join(MrHyde.configuration.destination, args[:name])
-        built? args[:name]
+      def build(opts = {})
+        if opts[:name].kind_of? Array
+          opts.delete(:name).each { |bn| build_blog opts.merge({ :name => bn }) }
+        elsif opts[:name].kind_of? String
+          build_blog opts
+        elsif opts[:name].nil?
+          list.each { |bn| build_blog opts.merge({ :name => bn }) }
+        end
       rescue Exception => e
-        @logger.error "cannot build site: #{args[:name]}: #{e}"
+        MrHyde.logger.error "cannot build site: #{opts[:name]}: #{e}"
         false
+      end
+
+      def list
+        entries = Dir.entries MrHyde.configuration.sources
+        entries.reject! { |item| item == '.' or item == '..' }
+        entries
       end
 
       def exist?(blog_name)
@@ -66,9 +82,27 @@ module MrHyde
 
       private
 
+      def create_blog(opts)
+        return false if check_blog(opts[:name], :exist?, "#{opts[:name]} blog already exist")
+
+        Jekyll::Commands::New.process [File.join(MrHyde.configuration.sources, opts[:name])]
+        exist? opts[:name] 
+      end
+
+      def build_blog(opts)
+        return false if check_blog(opts[:name], :built?, "#{opts[:name]} cannot be built, blog already built")
+
+        Jekyll::Commands::Build.process 'source' => File.join(MrHyde.configuration.sources, opts[:name]), 'destination' => File.join(MrHyde.configuration.destination, opts[:name])
+        built? opts[:name]
+      end
+
+      def site?
+        File.exist? MrHyde.configuration.root
+      end
+
       def check_blog(blog_name, method, message)
         if not send(method, blog_name)
-          @logger.debug message
+          MrHyde.logger.debug message
           return false
         end
         true
