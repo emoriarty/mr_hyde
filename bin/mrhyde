@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+STDOUT.sync = true
+
+$:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
+
+require 'mercenary'
+require 'mr_hyde'
+
+Mercenary.program(:mrhyde) do |p|
+  p.version MrHyde::VERSION
+  p.description "Mr. Hyde is a tool intended to manage as many blog as you want powered by Jekyll."
+  p.syntax "mrhyde <subcommand> [options]"
+
+  p.command(:new) do |c|
+    c.syntax "new [site <path>|blog <name>] "
+    c.description "Creates a new Mr. Hyde site scaffold in path"
+
+    c.action do |args, options|
+      MrHyde::Commands::New.process args
+    end
+  end
+end

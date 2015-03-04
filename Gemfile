@@ -4,3 +4,4 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'jekyll', '2.5.3'
+gem 'mercenary', '0.3.5'
