@@ -3,11 +3,10 @@ require "mr_hyde/blog"
 
 module MrHyde
   module Commands
-    class Remove < MrHyde::Command
+    class Delete < MrHyde::Command
       class << self
         def process(args, opts = {})
           MrHyde.logger.info "process"
-          Blog.remove args, opts
         end
       end
     end

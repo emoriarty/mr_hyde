@@ -4,8 +4,10 @@ STDOUT.sync = true
 
 $:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
 
+require 'io/console'
 require 'mercenary'
 require 'mr_hyde'
+require 'mr_hyde/commands/remove'
 
 Mercenary.program(:mrhyde) do |p|
   p.version MrHyde::VERSION
@@ -50,12 +52,25 @@ Mercenary.program(:mrhyde) do |p|
     end
   end
   
-  p.command(:remove) do |c|
-    c.syntax "remove name[name, name, ...] "
-    c.description "Remove a Jekyll site when on Mr.Hyde root folder."
+  p.command(:remove) do |rm|
+    rm.syntax "remove name[, name, name, ...] "
+    rm.description "Remove a Jekyll site when on Mr.Hyde root folder."
 
-    c.action do |args, options|
-      MrHyde::Commands::Remove.process args, options
+    rm.option "force", "--force", "Don't ask for remove blog"
+
+    rm.action do |args, options|
+      #if options['force']
+        MrHyde::Commands::Remove.process(args, options)
+=begin else
+        args_clone = args.clone
+        puts args_clone
+        args_clone.each do |sm|
+          print "Are you sure you want to remove #{sm} (y|n):"
+          value = gets.chomp
+          puts "value: {value}\n"
+          MrHyde::Commands::Remove.process sm, opts if value == 'y'
+        end
+=end
     end
 
   end
@@ -65,7 +80,7 @@ Mercenary.program(:mrhyde) do |p|
     c.description "Build the named blog or blogs, by default if no name is indicated then all blog will be built"
 
     c.action do |args, options|
-      MrHyde::Commands::New.process args
+      MrHyde::Commands::Build.process args
     end
   end
 

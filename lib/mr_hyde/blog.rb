@@ -36,12 +36,15 @@ module MrHyde
       #   Hash[:path] (String)
       # Returns
       #   boolean
-      def remove(args)
-        return false if not check_blog(args[:name], :exist?, "#{args[:name]} cannot be removed, blog does not exist")
+      def remove(args, opts = {})
 
-        FileUtils.remove_dir File.join(MrHyde.configuration.sources, args[:name])
-        MrHyde.logger.debug "#{args[:name]} blog removed properly from the root path#{MrHyde.configuration.root}"
-        not exist? args[:name]
+        if args.kind_of? Array
+          args.each do |sm|
+            remove_blog sm, opts
+          end
+        else
+          remove_blog args, opts
+        end
       rescue Exception => e
         MrHyde.logger.error "cannot remove the blog: #{e}"
         false
@@ -88,6 +91,17 @@ module MrHyde
         options = MrHyde.configuration(opts)
         Jekyll::Commands::New.process [File.join(options['sources'], args[:name])], opts
         exist? options['sources'], args[:name] 
+      end
+
+      def remove_blog(name, opts = {})
+        options = MrHyde.configuration(opts)
+        if File.exist? File.join(options['sources'], name)
+          FileUtils.remove_dir File.join(options['sources'], name)
+        end
+        if File.exist? File.join(options['destination'], name)
+          FileUtils.remove_dir File.join(options['destination'], name)
+        end
+        MrHyde.logger.info "#{name} site removed"
       end
 
       def build_blog(args)
