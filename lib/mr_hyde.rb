@@ -7,6 +7,7 @@ require "logger"
 
 require "jekyll/stevenson"
 require "jekyll/log_adapter"
+require "jekyll/utils"
 
 module MrHyde
   class << self
@@ -15,6 +16,20 @@ module MrHyde
     def configure
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
+    end
+
+    def configuration(override = Hash.new)
+      config = Configuration[Configuration::DEFAULTS]
+      override = Configuration[override].stringify_keys
+      unless override.delete('skip_config_files')
+        override['config'] ||= config['config']
+        config = config.read_config_files(config.config_files(override))
+      end
+      # Merge DEFAULTS < _config.yml < override
+      config = Jekyll::Utils.deep_merge_hashes(config, override).stringify_keys
+      set_timezone(config['timezone']) if config['timezone']
+      
+      config
     end
 
     # Public: Fetch the logger instance for this Jekyll process.

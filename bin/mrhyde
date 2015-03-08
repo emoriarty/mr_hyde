@@ -20,17 +20,22 @@ Mercenary.program(:mrhyde) do |p|
       site.syntax "site <path>"
       site.description "Creates a new Mr. Hyde site"
 
+      site.option "force", "--force", "Force creation even if PATH already exists"
+
       site.action do |args, options|
-        MrHyde::Commands::New.process :blog, args
+        MrHyde::Commands::New.process({ :type => :site, :args => args }, options)
       end
     end
 
     c.command(:blog) do |blog|
-      blog.syntax "new <name|name, name, ..., n>"
+      blog.syntax "new name [name .. n]"
       blog.description "Creates a new Jekyll blog or blogs"
 
+      blog.option "force", "--force", "Force creation even if PATH already exists"
+      blog.option "blank", "--blank", "Creates scaffolding but with empty files"
+
       blog.action do |args, options|
-        MrHyde::Commands::New.process :blog, args
+        MrHyde::Commands::New.process({ :type => :blog, :args => args }, options)
       end
     end
 

@@ -1,36 +1,34 @@
+require "jekyll/configuration"
+
 module MrHyde
-  
+
   # Defaults 
   # root_path: user folder
   # root_name: root folder name
   #
-  class Configuration
+  class Configuration < Jekyll::Configuration
 
     DEFAULTS = {
-      'root' => File.join(Dir.pwd, 'mr_hyde'),
-      'sources' => File.join(Dir.pwd, 'mr_hyde', 'sources'),
-      'destination' => File.join(Dir.pwd, 'mr_hyde', 'sites'),
-      'config_file' => '_mrhyde.yml',
-      'jekyll_config_file' => '_jekyll.yml'
+      'sources' => 'sources',
+      'destination' => 'sites',
+      'config' => '_mrhyde.yml',
+      'jekyll_config' => '_jekyll.yml'
     }
+    
+    def read_config_files(files)
+      configuration = clone
 
-    attr_accessor :root, :sources, :destination, :config_file, :jekyll_config_file
-
-    def initialize
-      @root = DEFAULTS['root']
-      @sources = DEFAULTS['sources']
-      @destination = DEFAULTS['destination']
-      @config_file = DEFAULTS['config_file']
-      @jekyll_config_file = DEFAULTS['jekyll_config_file']
-
-    end
-
-    def source_path
-      sources
-    end
-
-    def destination_path
-      destination
+      begin
+        files.each do |config_file|
+          new_config = read_config_file(config_file)
+          configuration = Jekyll::Utils.deep_merge_hashes(configuration, new_config)
+        end
+      rescue ArgumentError => err
+        MrHyde.logger.warn "WARNING:", "Error reading configuration. " +
+                     "Using defaults (and options)."
+        $stderr.puts "#{err}"
+      end
+      configuration
     end
   end
 end

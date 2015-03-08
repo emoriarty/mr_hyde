@@ -11,7 +11,7 @@ module MrHyde
       # 
       # Returns a full MrHyde configuration
       def configuration_from_options(options)
-        configure(options)
+        MrHyde.configuration(options)
       end
       
       def configuration

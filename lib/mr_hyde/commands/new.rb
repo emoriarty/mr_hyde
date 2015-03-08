@@ -18,44 +18,42 @@ module MrHyde
         # if :type is :blog then
         #   :name => blog's name
         #
-        def process(opts)
-          case opts.delete(:type)
-            when :blog
-              new_blog opts
-            when :site
-            else
-              new_site
+        def process(args, opts = {})
+          case args.delete(:type)
+            when :blog then new_blog(args[:args], opts)
+            when :site then new_site(args[:args], opts)
           end
         end
         
-        def preserve_source_location?(path, opts=nil)
-          #!options["force"] && !Dir["#{path}/**/*"].empty?
-          !Dir["#{path}/**/*"].empty?
-        end
-
-        def templates_path
-          File.expand_path "../../templates", File.dirname(__FILE__)
-        end
-
-        def mrhyde_config_template
-          File.join templates_path, '_mrhyde.yml'
-        end
         private 
-          def new_site
-            if preserve_source_location?(MrHyde.configuration.root)
-              MrHyde.logger.abort_with "Conflict:", "#{MrHyde.configuration.root} exists and is not empty."
-            end
-
-            FileUtils.mkdir_p(configuration.sources) unless File.exist?(configuration.sources)
-            FileUtils.mkdir_p(configuration.destination) unless File.exist?(configuration.destination)
-            FileUtils.copy_file mrhyde_config_template, 
-              File.join(configuration.root, configuration.config_file)
-            FileUtils.copy_file MrHyde::Extensions::New.default_config_file, 
-              File.join(configuration.root, configuration.jekyll_config_file)
+          def preserve_source_location?(path, opts)
+            !opts["force"] && !Dir["#{path}/**/*"].empty?
           end
 
-          def new_blog(opts)
-            MrHyde::Blog.create(opts)
+          def new_site(args, opts)
+            new_site_path = File.expand_path(args.join(" "), Dir.pwd)
+            FileUtils.mkdir_p new_site_path
+            if preserve_source_location?(new_site_path, opts)
+              MrHyde.logger.abort_with "Conflict:", "#{new_site_path} exists and is not empty."
+            end
+
+            create_sample_files new_site_path
+
+            MrHyde.logger.info "New Mr. Hyde Site installed in #{new_site_path}"
+          end
+
+          def new_blog(args, opts)
+            Blog.create({ :name => args }, opts)
+          end
+
+          def create_sample_files(path)
+            FileUtils.cp_r site_template + '/.', path
+            FileUtils.copy_file MrHyde::Extensions::New.default_config_file, 
+              File.join(path, '_jekyll.yml')
+          end
+
+          def site_template
+            File.expand_path("../../site_template", File.dirname(__FILE__))
           end
       end
     end
