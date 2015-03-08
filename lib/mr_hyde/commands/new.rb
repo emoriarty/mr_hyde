@@ -20,8 +20,8 @@ module MrHyde
         #
         def process(args, opts = {})
           case args.delete(:type)
-            when :blog then new_blog(args[:args], opts)
             when :site then new_site(args[:args], opts)
+            else scaffold(args[:args], opts)
           end
         end
         
@@ -30,7 +30,7 @@ module MrHyde
             !opts["force"] && !Dir["#{path}/**/*"].empty?
           end
 
-          def new_site(args, opts)
+          def scaffold(args, opts)
             new_site_path = File.expand_path(args.join(" "), Dir.pwd)
             FileUtils.mkdir_p new_site_path
             if preserve_source_location?(new_site_path, opts)
@@ -42,7 +42,7 @@ module MrHyde
             MrHyde.logger.info "New Mr. Hyde Site installed in #{new_site_path}"
           end
 
-          def new_blog(args, opts)
+          def new_site(args, opts)
             Blog.create({ :name => args }, opts)
           end
 
