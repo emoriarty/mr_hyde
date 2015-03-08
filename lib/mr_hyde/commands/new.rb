@@ -21,7 +21,7 @@ module MrHyde
         def process(args, opts = {})
           case args.delete(:type)
             when :site then new_site(args[:args], opts)
-            else scaffold(args[:args], opts)
+            else scaffold(args, opts)
           end
         end
         
@@ -43,7 +43,7 @@ module MrHyde
           end
 
           def new_site(args, opts)
-            Blog.create({ :name => args }, opts)
+            Blog.create(args, opts)
           end
 
           def create_sample_files(path)

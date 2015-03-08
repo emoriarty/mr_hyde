@@ -19,71 +19,51 @@ Mercenary.program(:mrhyde) do |p|
     c.description "Creates a new Mr. Hyde site scaffold in path"
     c.option "force", "--force", "Force creation even if PATH already exists"
 
-    c.command(:scaffold) do |scf|
-      scf.syntax "scaffold PATH"
-      scf.description "Creates a new Mr. Hyde site scaffold in path"
-      scf.option "force", "--force", "Force creation even if PATH already exists"
-
-      scf.action do |args, options|
-        MrHyde::Commands::New.process({ :args => args }, options)
-      end
+    c.action do |args, options|
+      MrHyde::Commands::New.process(args, options)
     end
+  end
 
-    c.command(:site) do |site|
-      site.syntax "site name [name .. n]"
-      site.description "Creates a new Jekyll site or sites"
+  p.command(:site) do |site|
+    site.syntax "site <subcommand>"
+    site.description "Manage all sites from command line"
 
-      site.option "force", "--force", "Force creation even if PATH already exists"
-      site.option "blank", "--blank", "Creates scaffolding but with empty files"
+    site.command(:new) do |snew|
+      snew.syntax "new name[ name ... n]"
+      snew.description "Creates a new Jekyll site or sites"
 
-      site.action do |args, options|
+      snew.option "force", "--force", "Force creation even if PATH already exists"
+      snew.option "blank", "--blank", "Creates scaffolding but with empty files"
+
+      snew.action do |args, options|
         MrHyde::Commands::New.process({ :type => :site, :args => args }, options)
       end
     end
 
-    c.action do |args, options|
-      if args.empty?
-        puts c
-      else
-        unless c.has_command?(args.first)
-          MrHyde.logger.abort_with "Invalid command. Use --help for more information"
-        end
+    site.command(:remove) do |srm|
+      srm.syntax "remove name[ name ... n] "
+      srm.description "Remove a Jekyll site when on Mr.Hyde root folder."
+
+      srm.option "force", "--force", "Don't ask for remove blog"
+
+      srm.action do |args, options|
+        MrHyde::Commands::Remove.process(args, options)
       end
     end
-  end
+    
+    site.command(:build) do |sbuild|
+      sbuild.syntax "build name[ name ... n] "
+      sbuild.description "Build the named blog or blogs, by default if no name is indicated then all blog will be built"
+
+      sbuild.option "all", "--all", "Build all blogs"
+
+      sbuild.action do |args, options|
+        MrHyde::Commands::Build.process args
+      end
+    end
+
+  end 
   
-  p.command(:remove) do |rm|
-    rm.syntax "remove name[, name, name, ...] "
-    rm.description "Remove a Jekyll site when on Mr.Hyde root folder."
-
-    rm.option "force", "--force", "Don't ask for remove blog"
-
-    rm.action do |args, options|
-      #if options['force']
-        MrHyde::Commands::Remove.process(args, options)
-=begin else
-        args_clone = args.clone
-        puts args_clone
-        args_clone.each do |sm|
-          print "Are you sure you want to remove #{sm} (y|n):"
-          value = gets.chomp
-          puts "value: {value}\n"
-          MrHyde::Commands::Remove.process sm, opts if value == 'y'
-        end
-=end
-    end
-
-  end
-
-  p.command(:build) do |c|
-    c.syntax "build name[name, name, ...] "
-    c.description "Build the named blog or blogs, by default if no name is indicated then all blog will be built"
-
-    c.action do |args, options|
-      MrHyde::Commands::Build.process args
-    end
-  end
-
   p.action do |args, options|
     if args.empty?
       puts p

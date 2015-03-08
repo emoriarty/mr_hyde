@@ -2,10 +2,6 @@ require "jekyll/configuration"
 
 module MrHyde
 
-  # Defaults 
-  # root_path: user folder
-  # root_name: root folder name
-  #
   class Configuration < Jekyll::Configuration
 
     DEFAULTS = {

@@ -11,8 +11,8 @@ module MrHyde
     class Build < MrHyde::Command
       class << self
         # Options
-        def process(opts = {})
-          MrHyde::Blog.build opts
+        def process(args, opts = {})
+          MrHyde::Blog.build args, opts
         end
       end
     end

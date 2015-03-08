@@ -6,7 +6,6 @@ module MrHyde
     class Remove < MrHyde::Command
       class << self
         def process(args, opts = {})
-          MrHyde.logger.info "process"
           Blog.remove args, opts
         end
       end
