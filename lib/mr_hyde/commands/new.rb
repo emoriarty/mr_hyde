@@ -26,34 +26,16 @@ module MrHyde
         end
         
         private 
-          def preserve_source_location?(path, opts)
-            !opts["force"] && !Dir["#{path}/**/*"].empty?
-          end
 
           def scaffold(args, opts)
-            new_site_path = File.expand_path(args.join(" "), Dir.pwd)
-            FileUtils.mkdir_p new_site_path
-            if preserve_source_location?(new_site_path, opts)
-              MrHyde.logger.abort_with "Conflict:", "#{new_site_path} exists and is not empty."
-            end
-
-            create_sample_files new_site_path
-
+            new_site_path = MrHyde.create args, opts
             MrHyde.logger.info "New Mr. Hyde Site installed in #{new_site_path}"
+          rescue SystemExit => se
+            MrHyde.logger.abort_with "Conflict:", se.message
           end
 
           def new_site(args, opts)
             Blog.create(args, opts)
-          end
-
-          def create_sample_files(path)
-            FileUtils.cp_r site_template + '/.', path
-            FileUtils.copy_file MrHyde::Extensions::New.default_config_file, 
-              File.join(path, '_jekyll.yml')
-          end
-
-          def site_template
-            File.expand_path("../../site_template", File.dirname(__FILE__))
           end
       end
     end

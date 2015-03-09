@@ -15,7 +15,7 @@ module MrHyde
       #     Array[String] => creates the correspondings blog names
       # Returns
       #   boolean
-      def create(args, opts)
+      def create(args, opts = {})
         opts = MrHyde.configuration(opts)
 
         if args.kind_of? Array and not args.empty?

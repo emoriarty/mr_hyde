@@ -4,6 +4,7 @@ require "mr_hyde/commands/new"
 require "mr_hyde/commands/build"
 
 require "logger"
+require "fileutils"
 
 require "jekyll/stevenson"
 require "jekyll/log_adapter"
@@ -43,13 +44,38 @@ module MrHyde
     # by default will be created under root folder.
     # Copies the default _config.yml for all blogs, in root folder.
     #
-    def create(action = nil, opts = {})
-      opts[:type] = action
-      Commands::New.process opts    
+    # Throws a SystemExit exception
+    #
+    def create(args, opts = {})
+      args = [args] if args.kind_of? String
+      new_site_path = File.expand_path(args.join(" "), Dir.pwd)
+      FileUtils.mkdir_p new_site_path
+      if preserve_source_location?(new_site_path, opts)
+        raise SystemExit.new "#{new_site_path} exists and is not empty."
+      end
+
+      create_sample_files new_site_path
+      new_site_path
     end
 
     def build(opts = {})
       Commands::Build.process opts
+    end
+
+    private 
+
+    def preserve_source_location?(path, opts)
+      !opts["force"] && !Dir["#{path}/**/*"].empty?
+    end
+
+    def create_sample_files(path)
+      FileUtils.cp_r site_template + '/.', path
+      FileUtils.copy_file MrHyde::Extensions::New.default_config_file, 
+        File.join(path, '_jekyll.yml')
+    end
+
+    def site_template
+      File.expand_path("./site_template", File.dirname(__FILE__))
     end
   end
 
