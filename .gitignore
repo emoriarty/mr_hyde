@@ -13,3 +13,4 @@
 *.a
 mkmf.log
 .sass-cache/
+.DS_Store
