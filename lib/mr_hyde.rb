@@ -1,4 +1,5 @@
 require "mr_hyde/version"
+require "mr_hyde/blog"
 require "mr_hyde/configuration"
 require "mr_hyde/commands/new"
 require "mr_hyde/commands/build"
@@ -55,7 +56,11 @@ module MrHyde
         raise SystemExit.new "#{new_site_path} exists and is not empty."
       end
 
-      create_sample_files new_site_path
+      if opts['blank']
+        create_black_site new_site_path
+      else
+        create_sample_files new_site_path
+      end
       new_site_path
     end
 
@@ -73,6 +78,11 @@ module MrHyde
       FileUtils.cp_r site_template + '/.', path
       FileUtils.copy_file MrHyde::Extensions::New.default_config_file, 
         File.join(path, '_jekyll.yml')
+      Dir.chdir(path) do
+        FileUtils.mkdir(%w(sources)) unless File.exist? 'sources'
+        Blog.create ['welcome_site'], { 'force' => 'force' }
+      end
+
     end
 
     def site_template
