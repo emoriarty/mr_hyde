@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = MrHyde::VERSION
   spec.authors       = ["Enrique Arias Cervero"]
   spec.email         = ["enrique.arias.cervero@gmail.com"]
-  spec.summary       = %q{Mr. Hyde lets you generate and manage as many blogs as you want, something like Medium.}
-  spec.description   = %q{Mr. Hyde lets you generate and manage as many blogs as you want, something like Medium.}
+  spec.summary       = %q{Mr. Hyde lets you generate and manage as many sites as you want.}
+  spec.description   = %q{Mr. Hyde lets you generate and manage as many sites as you want, something similar like Medium. It's based on Jekyll.} 
   spec.homepage      = ""
   spec.license       = "MIT"
 
