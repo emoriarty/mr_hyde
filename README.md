@@ -16,11 +16,15 @@ gem 'mr_hyde'
 
 And then execute:
 
-    $ bundle
+```bash
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install mr_hyde
+```bash
+$ gem install mr_hyde
+```
 
 ## Usage
 
@@ -34,18 +38,35 @@ The previuos command creates the basic structure folder in the passed in PATH or
 
 Once created get in the Mr. Hyde root folder and you can execute the next commands:
 
-* site new NAME[ NAME ... n]
-* site build NAME [NAME ... n]
-* site remove NAME [NAME ... n]
+```bash
+$ cd PATH
+$ mrhyde site new SITE_NAME
+$ mrhyde site build SITE_NAME
+```
 
-One example is 
+The above commands give you first site, by now if you want to run on a server get in the site/SITE_NAME and executes:
 
-    $ mrhyde site new site_example
+```bash
+$ cd root_folder/site/site_name
+$ jekyll serve
+```
 
-You can see more information about the commands with the command line --help option:
+If you want to know more about this, please refer to [Jekyll](http://jekyllrb.com/).
 
-    $ mrhyde site new --help
+Removing the built site is:
 
+```bash
+$ mrhyde site rm SITE_NAME
+$ mrhyde site rm SITE_NAME --full
+```
+
+The last command with the _--full_ option removes the site source as well, so take care with this option.
+
+You can see more information about the commands with the command line _--help_ option:
+
+```bash
+$ mrhyde site new --help
+```
 
 ## Contributing
 
