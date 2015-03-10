@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/emoriarty/mr_hyde/master/resources/mrhyde-logo-red.png" alt="Mr.Hyde logo" height="100"/>
+<img src="https://raw.githubusercontent.com/emoriarty/mr_hyde/master/resources/mrhyde-logo.png" alt="Mr.Hyde logo" height="100"/>
 # MrHyde
 Mr. Hyde lets you generate and manage as many sites as you want.
 
