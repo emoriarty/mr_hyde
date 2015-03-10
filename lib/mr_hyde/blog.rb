@@ -61,10 +61,11 @@ module MrHyde
       # Returns
       #   boolean
       def build(args, opts = {})
+        args = [args] if args.kind_of? String
         opts = MrHyde.configuration(opts)
 
-        if opts['all']
-          build_blogs list(opts), opts
+        if opts["all"]
+          build_blogs list(opts['sources']), opts
         elsif args.kind_of? Array
           build_blogs args, opts 
         elsif args.kind_of? String
@@ -72,6 +73,7 @@ module MrHyde
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
+        MrHyde.logger.error e.backtrace
       end
 
       def list(path)

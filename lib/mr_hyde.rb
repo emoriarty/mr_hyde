@@ -22,6 +22,7 @@ module MrHyde
     def configuration(override = Hash.new)
       config = Configuration[Configuration::DEFAULTS]
       override = Configuration[override].stringify_keys
+
       unless override.delete('skip_config_files')
         override['config'] ||= config['config']
         config = config.read_config_files(config.config_files(override))

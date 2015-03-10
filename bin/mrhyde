@@ -58,7 +58,7 @@ Mercenary.program(:mrhyde) do |p|
       sbuild.option "all", "--all", "Build all blogs"
 
       sbuild.action do |args, options|
-        MrHyde::Commands::Build.process args
+        MrHyde::Commands::Build.process args, options
       end
     end
 
