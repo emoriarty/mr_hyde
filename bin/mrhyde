@@ -42,9 +42,13 @@ Mercenary.program(:mrhyde) do |p|
 
     site.command(:remove) do |srm|
       srm.syntax "remove name[ name ... n] "
-      srm.description "Remove a Jekyll site when on Mr.Hyde root folder."
+      srm.description "Remove a Jekyll site when on Mr.Hyde root folder. By default it removes just the built site."
+
+      srm.alias(:rm)
 
       srm.option "force", "--force", "Don't ask for remove blog"
+      srm.option "all", "--all", "Remove all built sites. This option works alone."
+      srm.option "full", "--full", "Remove all built and draft site or sites. This option can be used with the rest of options."
 
       srm.action do |args, options|
         MrHyde::Commands::Remove.process(args, options)

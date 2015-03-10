@@ -41,7 +41,11 @@ module MrHyde
       def remove(args, opts = {})
         opts = MrHyde.configuration(opts)
 
-        if args.kind_of? Array
+        if opts['all']
+          list(opts['sources']).each do |sm|
+            remove_blog sm, opts
+          end
+        elsif args.kind_of? Array
           args.each do |sm|
             remove_blog sm, opts
           end
@@ -98,7 +102,7 @@ module MrHyde
       end
 
       def remove_blog(name, opts = {})
-        if File.exist? File.join(opts['sources'], name)
+        if opts['full'] and File.exist? File.join(opts['sources'], name)
           FileUtils.remove_dir File.join(opts['sources'], name)
           MrHyde.logger.info "#{name} removed from #{opts['sources']}"
         end
