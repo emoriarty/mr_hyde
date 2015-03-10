@@ -6,7 +6,7 @@ module MrHyde
 
     DEFAULTS = {
       'sources' => 'sources',
-      'destination' => 'sites',
+      'destination' => 'site',
       'config' => '_mrhyde.yml',
       'jekyll_config' => '_jekyll.yml'
     }
