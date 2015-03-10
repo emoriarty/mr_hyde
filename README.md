@@ -1,6 +1,10 @@
 # MrHyde
 
-TODO: Write a gem description
+Mr. Hyde lets you generate and manage as many sites as you want.
+
+It's based on [Jekyll](https://github.com/jekyll/jekyll), in fact Mr. Hyde wraps Jekyll to give you the possibilty of managing many sites.
+
+The current version is based on [Jekyll 2.5.3](https://github.com/jekyll/jekyll/tree/v2.5.3).
 
 ## Installation
 
@@ -20,7 +24,28 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In order to use Mr. Hyde the first thing you must do is creating the Mr. Hyde rootl folder with the next command:
+
+```bash
+$ mrhyde new [PATH]
+```
+
+The previuos command creates the basic structure folder in the passed in PATH or in the same folder if no PATH given.
+
+Once created get in the Mr. Hyde root folder and you can execute the next commands:
+
+* site new NAME[ NAME ... n]
+* site build NAME [NAME ... n]
+* site remove NAME [NAME ... n]
+
+One example is 
+
+    $ mrhyde site new site_example
+
+You can see more information about the commands with the command line --help option:
+
+    $ mrhyde site new --help
+
 
 ## Contributing
 
