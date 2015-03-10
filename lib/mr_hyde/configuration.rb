@@ -5,10 +5,16 @@ module MrHyde
   class Configuration < Jekyll::Configuration
 
     DEFAULTS = {
-      'sources' => 'sources',
-      'destination' => 'site',
-      'config' => '_mrhyde.yml',
-      'jekyll_config' => '_jekyll.yml'
+      # Places
+      'sources'       => 'sources',
+      'destination'   => 'site',
+      'config'        => '_mrhyde.yml',
+      'jekyll_config' => '_jekyll.yml',
+      # Serving
+      'detach'  => false, # default to not detaching the server
+      'port'    => '4000',
+      'host'    => '127.0.0.1',
+      'baseurl' => '',
     }
     
     def read_config_files(files)

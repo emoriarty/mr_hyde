@@ -8,6 +8,7 @@ require 'io/console'
 require 'mercenary'
 require 'mr_hyde'
 require 'mr_hyde/commands/remove'
+require 'mr_hyde/commands/serve'
 
 Mercenary.program(:mrhyde) do |p|
   p.version MrHyde::VERSION
@@ -65,8 +66,26 @@ Mercenary.program(:mrhyde) do |p|
         MrHyde::Commands::Build.process args, options
       end
     end
-
   end 
+
+  p.command(:serve) do |serve|
+    serve.syntax "serve [options]"
+    serve.description "Serve your site locally"
+    serve.alias :server
+
+    serve.option 'detach', '-B', '--detach', 'Run the server in the background (detach)'
+    serve.option 'port', '-P', '--port [PORT]', 'Port to listen on'
+    serve.option 'host', '-H', '--host [HOST]', 'Host to bind to'
+    serve.option 'baseurl', '-b', '--baseurl [URL]', 'Base URL'
+    serve.option 'skip_initial_build', '--skip-initial-build', 'Skips the initial site build which occurs before the server is started.'
+
+    serve.action do |args, options|
+      options["serving"] = true
+      #options["watch"] = true unless options.key?("watch")
+      MrHyde::Commands::Build.process(options['all'] = 'all') if options['build']
+      MrHyde::Commands::Serve.process(options)
+    end
+  end
   
   p.action do |args, options|
     if args.empty?
