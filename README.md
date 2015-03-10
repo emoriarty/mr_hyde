@@ -1,5 +1,5 @@
+<img src="https://raw.githubusercontent.com/emoriarty/mr_hyde/master/resources/mrhyde-logo.png" alt="Mr.Hyde logo" height="100"/>
 # MrHyde
-
 Mr. Hyde lets you generate and manage as many sites as you want.
 
 It's based on [Jekyll](https://github.com/jekyll/jekyll), in fact Mr. Hyde wraps Jekyll to give you the possibilty of managing many sites.
