@@ -6,7 +6,6 @@ require "mr_hyde/configuration"
 # TODO: The site place must be taken from the default config or the one provided by user
 module MrHyde
   class Blog
-    
     class << self
       # Creates the directory and necessary files for the blog
       # args
@@ -42,7 +41,7 @@ module MrHyde
         opts = MrHyde.configuration(opts)
 
         if opts['all']
-          list(opts['sources']).each do |sm|
+          list(MrHyde.sources_sites).each do |sm|
             remove_blog sm, opts
           end
         elsif args.kind_of? Array
@@ -69,11 +68,11 @@ module MrHyde
         opts = MrHyde.configuration(opts)
 
         if opts["all"]
-          build_blogs list(opts['sources']), opts
+          build_blogs list(MrHyde.sources_sites), opts
         elsif args.kind_of? Array
           build_blogs args, opts 
         elsif args.kind_of? String
-          build_blog args
+          build_blog args, opts
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
@@ -87,28 +86,40 @@ module MrHyde
       end
 
       def exist?(name, opts)
-        File.exist? File.join(opts['sources'], name)
+        File.exist? File.join(MrHyde.sources_sites, name)
       end
         
       def built?(name, opts)
-        File.exist? File.join(opts['destination'], name)
+        File.exist? File.join(MrHyde.destination, name)
+      end
+
+      def has_custom_config?(name, opts)
+        File.exist? custom_config(name, opts)
+      end
+
+      def site_path(name)
+        Jekyll.sanitized_path MrHyde.sources_sites, name
+      end
+      
+      def custom_config(name, opts)
+        File.join site_path(name), opts['jekyll_config']
       end
 
       private
 
       def create_blog(args, opts = {})
-        Jekyll::Commands::New.process [File.join(opts['sources'], args)], opts
+        MrHyde::Extensions::New.process [File.join(MrHyde.sources_sites, args)], opts
         exist? args, opts
       end
 
       def remove_blog(name, opts = {})
-        if opts['full'] and File.exist? File.join(opts['sources'], name)
-          FileUtils.remove_dir File.join(opts['sources'], name)
-          MrHyde.logger.info "#{name} removed from #{opts['sources']}"
+        if opts['full'] and File.exist? File.join(MrHyde.sources_sites, name)
+          FileUtils.remove_dir File.join(MrHyde.sources_sites, name)
+          MrHyde.logger.info "#{name} removed from #{MrHyde.sources_sites}"
         end
-        if File.exist? File.join(opts['destination'], name)
-          FileUtils.remove_dir File.join(opts['destination'], name)
-          MrHyde.logger.info "#{name} removed from #{opts['destination']}"
+        if File.exist? File.join(MrHyde.destination, name)
+          FileUtils.remove_dir File.join(MrHyde.destination, name)
+          MrHyde.logger.info "#{name} removed from #{MrHyde.destination}"
         end
       end
 
@@ -123,14 +134,12 @@ module MrHyde
       end
 
       def build_blog(name, opts)
-        Jekyll::Commands::Build.process 'source' => File.join(opts['sources'], name), 
-          'destination' => File.join(opts['destination'], name)
+        conf = MrHyde.custom_configuration(name)
+        puts conf
+        Jekyll::Commands::Build.process conf
         built? name, opts
       end
 
-      def site?
-        File.exist? MrHyde.configuration.root
-      end
 
       def check_blog(blog_name, method, message)
         if not send(method, blog_name)

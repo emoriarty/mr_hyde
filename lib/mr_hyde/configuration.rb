@@ -6,17 +6,22 @@ module MrHyde
 
     DEFAULTS = {
       # Places
+      'source'        => Dir.pwd,
       'sources'       => 'sources',
+      'sources_sites' => 'sites',
       'destination'   => 'site',
+      'layouts'       => '_layouts',
+      'includes'      => '_includes',
       'config'        => '_mrhyde.yml',
-      'jekyll_config' => '_jekyll.yml',
+      'jekyll_config' => '_config.yml',
       # Serving
       'detach'  => false, # default to not detaching the server
       'port'    => '4000',
       'host'    => '127.0.0.1',
       'baseurl' => '',
     }
-    
+
+
     def read_config_files(files)
       configuration = clone
 

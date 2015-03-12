@@ -19,6 +19,7 @@ Mercenary.program(:mrhyde) do |p|
     c.syntax "new <subcommand>"
     c.description "Creates a new Mr. Hyde site scaffold in path"
     c.option "force", "--force", "Force creation even if PATH already exists"
+    c.option "blank", "--blank", "Creates scaffolding but with empty files"
 
     c.action do |args, options|
       MrHyde::Commands::New.process(args, options)
@@ -35,6 +36,7 @@ Mercenary.program(:mrhyde) do |p|
 
       snew.option "force", "--force", "Force creation even if PATH already exists"
       snew.option "blank", "--blank", "Creates scaffolding but with empty files"
+      snew.option "custom", "--custom", "Creates basic files to customize a site"
 
       snew.action do |args, options|
         MrHyde::Commands::New.process({ :type => :site, :args => args }, options)
