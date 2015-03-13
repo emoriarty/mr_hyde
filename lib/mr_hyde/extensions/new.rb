@@ -59,6 +59,7 @@ module MrHyde
             FileUtils.cp site_template + '/feed.xml', path
             FileUtils.cp site_template + '/about.md', path
             FileUtils.cp_r site_template + '/_posts', path
+            FileUtils.cp_r site_template + '/css', path
             FileUtils.rm File.expand_path(scaffold_path, path) 
           end
         end

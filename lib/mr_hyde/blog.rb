@@ -14,7 +14,6 @@ module MrHyde
                   else
                     File.join MrHyde.source, MrHyde.sources_sites
                   end
-        puts "Blog source: #{@source}\n"
         yield if block_given?
       end
 
@@ -171,14 +170,12 @@ module MrHyde
 
       def build_blog(name, opts)
         conf = MrHyde.custom_configuration(name)
-        puts conf
         Jekyll::Commands::Build.process conf
         built? name, opts
       end
 
       def build_main_site(opts)
         conf = MrHyde.custom_main_configuration(opts)
-        puts conf
         Jekyll::Commands::Build.process conf
       end
 
