@@ -8,12 +8,13 @@ module MrHyde
       # Places
       'source'        => Dir.pwd,
       'sources'       => 'sources',
-      'sources_sites' => 'sites',
+      'sources_sites' => '_sites',
       'destination'   => 'site',
       'layouts'       => '_layouts',
       'includes'      => '_includes',
       'config'        => '_mrhyde.yml',
       'jekyll_config' => '_config.yml',
+      'assets'        => '_assets',
       # Serving
       'detach'  => false, # default to not detaching the server
       'port'    => '4000',

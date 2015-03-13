@@ -14,6 +14,8 @@ require "mr_hyde/commands/build"
 module MrHyde
   require "mr_hyde/jekyll_ext/site"
   require "mr_hyde/jekyll_ext/tags/include"
+  require "mr_hyde/jekyll_ext/converters/scss"
+
   class << self
     attr_reader :source, :config
     attr_accessor :configuration
@@ -91,6 +93,7 @@ module MrHyde
       end
 
       if opts['blank']
+        # TODO create blank site
         create_blank_site new_site_path
       else
         create_sample_files new_site_path
