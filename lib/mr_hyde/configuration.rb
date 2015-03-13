@@ -15,6 +15,7 @@ module MrHyde
       'config'        => '_mrhyde.yml',
       'jekyll_config' => '_config.yml',
       'assets'        => '_assets',
+      'mainsite'      => 'main',
       # Serving
       'detach'  => false, # default to not detaching the server
       'port'    => '4000',

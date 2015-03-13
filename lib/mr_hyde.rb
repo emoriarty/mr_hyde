@@ -32,8 +32,21 @@ module MrHyde
       @config
     end
     
-    #
+    def custom_main_configuration(override = Hash.new)
+      jekyll_config = jekyll_main_defaults
+      # The order is important here, the last one overrides the previous ones
+      if override['config'].nil? or override['config'].blank?
+        override['config'] = []
+        override['config'] << config['jekyll_config'] if has_jekyll_config?
+        override['config'] << Blog.custom_config(config['mainsite'], config) if Blog.has_custom_config?(config['mainsite'], config)
+      end
+
+      Jekyll::Utils.deep_merge_hashes(jekyll_config, override)
+    end
+  
+
     # _config.yml < sources/sites/site/_config.yml < override
+    #
     def custom_configuration(site_name, override = Hash.new)
       jekyll_config = jekyll_defaults(site_name)
       # The order is important here, the last one overrides the previous ones
@@ -44,6 +57,14 @@ module MrHyde
       end
 
       Jekyll::Utils.deep_merge_hashes(jekyll_config, override)
+    end
+
+    def jekyll_main_defaults
+      { 
+        'source'      => File.join(sources, config['mainsite']), 
+        'destination' => File.join(destination),
+        'layouts'     => File.join(sources, config['layouts'])
+      }
     end
     
     def jekyll_defaults(site_name)
@@ -69,6 +90,10 @@ module MrHyde
 
     def destination
       config['destination']
+    end
+
+    def main_site
+      File.join source, sources, config['mainsite']
     end
 
     # Public: Fetch the logger instance for this Jekyll process.

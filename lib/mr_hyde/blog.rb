@@ -7,6 +7,17 @@ require "mr_hyde/configuration"
 module MrHyde
   class Blog
     class << self
+      def init(args, opts)
+        opts = MrHyde.configuration(opts)
+        @source = if opts['main']
+                    File.join MrHyde.source, MrHyde.sources
+                  else
+                    File.join MrHyde.source, MrHyde.sources_sites
+                  end
+        puts "Blog source: #{@source}\n"
+        yield if block_given?
+      end
+
       # Creates the directory and necessary files for the blog
       # args
       #   :name
@@ -15,7 +26,7 @@ module MrHyde
       # Returns
       #   boolean
       def create(args, opts = {})
-        opts = MrHyde.configuration(opts)
+        init(args, opts)
 
         if args.kind_of? Array and not args.empty?
           args.each do |bn| 
@@ -30,6 +41,7 @@ module MrHyde
         end
       rescue Exception => e
         MrHyde.logger.error "cannot create blog: #{e}"
+        MrHyde.logger.error e.backtrace
       end
 
       # Removes the blog directory
@@ -38,18 +50,20 @@ module MrHyde
       # Returns
       #   boolean
       def remove(args, opts = {})
-        opts = MrHyde.configuration(opts)
+        init(args, opts)
 
-        if opts['all']
-          list(MrHyde.sources_sites).each do |sm|
-            remove_blog sm, opts
+        unless is_main?
+          if opts['all']
+            list(MrHyde.sources_sites).each do |sm|
+              remove_blog sm, opts
+            end
+          elsif args.kind_of? Array
+            args.each do |sm|
+              remove_blog sm, opts
+            end
+          else
+            remove_blog args, opts
           end
-        elsif args.kind_of? Array
-          args.each do |sm|
-            remove_blog sm, opts
-          end
-        else
-          remove_blog args, opts
         end
       rescue Exception => e
         MrHyde.logger.error "cannot remove the blog: #{e}"
@@ -64,15 +78,21 @@ module MrHyde
       # Returns
       #   boolean
       def build(args, opts = {})
-        args = [args] if args.kind_of? String
-        opts = MrHyde.configuration(opts)
+        init(args, opts)
 
-        if opts["all"]
-          build_blogs list(MrHyde.sources_sites), opts
-        elsif args.kind_of? Array
-          build_blogs args, opts 
-        elsif args.kind_of? String
-          build_blog args, opts
+        unless opts.delete('main')
+          if opts["all"]
+            build_blogs list(MrHyde.sources_sites), opts
+          elsif args.kind_of? Array
+            build_blogs args, opts 
+          elsif args.kind_of? String
+            build_blog args, opts
+          end
+        else
+          build_main_site(opts)
+          #if opts["full"]
+            build_blogs list(MrHyde.sources_sites), opts
+          #end
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
@@ -98,16 +118,32 @@ module MrHyde
       end
 
       def site_path(name)
-        Jekyll.sanitized_path MrHyde.sources_sites, name
+        Jekyll.sanitized_path @source, name
       end
       
       def custom_config(name, opts)
         File.join site_path(name), opts['jekyll_config']
       end
+      
+      def is_main?(name)
+        File.directory? File.join(@source, name)
+      end
 
       private
 
       def create_blog(args, opts = {})
+        begin
+          if args.kind_of? Array
+            args.each do |name|
+              raise() if is_main(args)
+            end
+          else
+            raise() if is_main?(args)
+          end
+        rescue Exception => e
+          raise ArgumentError, 'The site\'s name cannot be the same than the main site name'
+        end
+
         MrHyde::Extensions::New.process [File.join(MrHyde.sources_sites, args)], opts
         exist? args, opts
       end
@@ -138,6 +174,12 @@ module MrHyde
         puts conf
         Jekyll::Commands::Build.process conf
         built? name, opts
+      end
+
+      def build_main_site(opts)
+        conf = MrHyde.custom_main_configuration(opts)
+        puts conf
+        Jekyll::Commands::Build.process conf
       end
 
 

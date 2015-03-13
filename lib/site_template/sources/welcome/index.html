@@ -7,10 +7,10 @@ layout: default
   <h1 class="page-heading">Sites</h1>
 
   <ul class="site-list">
-    {% for site in site.sites %}
+    {% for subsite in site.sites %}
       <li>
         <h2>
-          <a class="site-link" href="{{ site.url | prepend: site.baseurl }}">{{ post.title }}</a>
+          <a class="site-link" href="{{ subsite.baseurl }}">{{ subsite.name }}</a>
         </h2>
       </li>
     {% endfor %}

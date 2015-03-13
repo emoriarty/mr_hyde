@@ -88,6 +88,19 @@ Mercenary.program(:mrhyde) do |p|
       MrHyde::Commands::Serve.process(options)
     end
   end
+
+  
+  p.command(:build) do |build|
+    build.syntax "build"
+    build.description "Build the main site"
+
+    build.option "full", "--full", "Builds main site and subsites"
+
+    build.action do |args, options|
+      options['main'] = true
+      MrHyde::Commands::Build.process args, options
+    end
+  end
   
   p.action do |args, options|
     if args.empty?
