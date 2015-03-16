@@ -7,11 +7,15 @@
 
     {% include header.html %}
 
-    <div class="page-content">
-      <div class="wrapper">
-        {{ content }}
+    <section class="middle wrapper page-content">
+      <div class="row row-fluid">
+        <div id="primary" class="site-content">
+          <div id="content" role="main" class="page">
+            {{ content }}
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
     {% include footer.html %}
 

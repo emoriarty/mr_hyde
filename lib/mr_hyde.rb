@@ -138,13 +138,14 @@ module MrHyde
 
     def create_sample_files(path)
       FileUtils.cp_r site_template + '/.', path
-      # Copying the original _config.yml form jekyll to mrhyde folder
-      jekyll_config = MrHyde::Extensions::New.default_config_file
-      FileUtils.copy_file(jekyll_config, File.join(path, File.basename(jekyll_config)))
+      # Copying the original _config.yml from jekyll to mrhyde folder
+      # jekyll_config = MrHyde::Extensions::New.default_config_file
+      # FileUtils.copy_file(jekyll_config, File.join(path, File.basename(jekyll_config)))
       # Creating the default jekyll blog in mrhyde
       Dir.chdir(path) do
         FileUtils.mkdir(%w(sources)) unless File.exist? 'sources'
-        Blog.create ['welcome_site'], { 'force' => 'force' }
+        Blog.create ['sample-site'], { 'force' => 'force' }
+        Blog.create ['sample-full-site'], { 'full' => 'full', 'force' => 'force' }
       end
 
     end

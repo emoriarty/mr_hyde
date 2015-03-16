@@ -1,0 +1,488 @@
+/**
+ * Reset some basic elements
+ */
+body, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, hr,
+dl, dd, ol, ul, figure {
+    margin: 0;
+    padding: 0;
+}
+
+/**
+ * Basic styling
+ */
+html {
+  font-size: 100%;
+}
+
+body {
+  line-height: 1.6;
+  overflow-x: hidden;
+  font-family: 'Lora', Georgia, serif;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+iframe {
+  border: 0;
+  outline: none;
+}
+
+video, audio {
+  width: 100%;
+}
+
+object, embed, video, iframe {
+  max-width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+a {
+  color: #CE6607;
+  text-decoration: none;
+  &:hover {
+    color: #A35208;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+h1 a {
+  color: #333;
+}
+
+/* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
+
+.clearfix {
+  &:before {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    content: " ";
+    display: table;
+    clear: both;
+  }
+}
+
+.easing, .media-box .mask {
+  -webkit-transition: all 0.3s ease-out;
+  /* Safari 3.2+, Chrome */
+  -moz-transition: all 0.3s ease-out;
+  /* Firefox 4-15 */
+  -o-transition: all 0.3s ease-out;
+  /* Opera 10.5–12.00 */
+  transition: all 0.3s ease-out;
+  /* Firefox 16+, Opera 12.50+ */
+}
+
+/* -------------------------------------------- */
+/* FONTS */
+
+html, button, input, select, textarea, .toggle h4 {
+  font-family: 'Lora', Georgia, serif;
+}
+
+h1, h2, h3, h4, h5, h6, .main-navigation ul li, dt {
+  font-family: "Coustard", Georgia, serif;
+}
+
+h1.site-title {
+  font-family: "UnifrakturMaguntia", Georgia, serif;
+  a {
+    font-family: "UnifrakturMaguntia", Georgia, serif;
+  }
+}
+
+/* -------------------------------------------- */
+/* COLORS */
+/* Text Selection */
+
+::selection, ::-moz-selection {
+  text-shadow: none;
+  color: #333;
+  background: #FFFFCF;
+}
+
+body {
+  color: #444;
+}
+
+/* -------------------------------------------- */
+/* LAYOUT */
+
+.middle {
+  padding-bottom: 4em;
+  overflow: hidden;
+}
+
+.wrapper {
+  width: 100%;
+  > .row {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.row-fluid {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.readable-content {
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-with-sidebar {
+  max-width: 1200px;
+}
+
+/* NAVIGATION */
+
+.main-navigation {
+  div.selector {
+    display: none;
+    margin: 0 auto;
+    border: 0;
+    &:before {
+      font-size: 17px;
+      content: "\f0c9";
+    }
+    span {
+      font-weight: bold;
+    }
+  }
+  border-style: solid;
+  border-width: 1px 0;
+  border-color: #eee;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+      position: relative;
+      display: inline-block;
+      margin: 0 1.25em;
+      padding: 1em 0;
+      max-height: 1.5em;
+      font-size: .9em;
+      a {
+        display: inline-block;
+      }
+    }
+    .current-menu-item > a {
+      color: #C30;
+    }
+    li {
+      color: #333;
+      a {
+        color: #333;
+      }
+    }
+    ul {
+      display: none;
+      position: absolute;
+      top: 3.542em;
+      margin: -2px 0 0 0;
+      left: -1em;
+      width: 160px;
+      z-index: 310;
+      padding: 0;
+      border: 1px solid #ddd;
+      border-top: 2px solid #555;
+      box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+      li {
+        display: block;
+        max-height: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+        background-color: #fff;
+        border-bottom: 1px solid #eee;
+        &:first-child {
+          border-top: 0;
+        }
+        a {
+          display: block;
+          padding: .8em 1.2em;
+          font-size: .95em;
+          color: #666;
+          &:hover, &.selected {
+            color: #000;
+          }
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+      &:after {
+        content: " ";
+        position: absolute;
+        left: 1.6em;
+        bottom: 100%;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+        border-bottom: 12px solid #555;
+        border-right: 12px solid transparent;
+      }
+      ul {
+        top: 0;
+        left: auto;
+        right: 160px;
+        border: 1px solid #ddd;
+        border-right: 2px solid #777;
+        &:after {
+          content: " ";
+          position: absolute;
+          top: 1.2em;
+          left: 100%;
+          pointer-events: none;
+          width: 0;
+          height: 0;
+          border: 0;
+          border-top: 10px solid #555;
+          border-right: 10px solid transparent;
+        }
+        a {
+          font-size: 1em;
+        }
+      }
+    }
+  }
+  > ul > li > a {
+    &:hover, &.selected {
+      border-bottom: 1px dotted #ccc;
+    }
+  }
+}
+
+
+/* SEARCH */
+
+#search-form {
+  position: relative;
+  label {
+    position: absolute;
+    font-size: 1em;
+    top: 0.09em;
+    left: 0;
+    cursor: text;
+    &:hover {
+      color: #777;
+    }
+  }
+  #search {
+    font-size: .9em;
+    color: #888;
+    width: 50px;
+    min-width: 0;
+    max-width: none;
+    padding: 3px 23px 3px 0;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -ms-box-sizing: content-box;
+    box-sizing: content-box;
+    &:focus {
+      color: #333;
+      border-bottom: 1px dotted #ccc;
+    }
+  }
+}
+
+#search-submit {
+  position: absolute;
+  top: .24em;
+  right: 0;
+  margin: 0 0 0 -23px;
+  font-size: 1em;
+  text-shadow: none;
+  color: #444;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  background: none;
+  &:hover {
+    color: #000;
+  }
+}
+
+/* Mobile Search */
+
+.search-mobile {
+  display: none;
+  position: relative;
+  padding: 2em 1em;
+  background: #333;
+  form {
+    max-width: 262px;
+    position: relative;
+    margin: 0 auto;
+  }
+  #search-mobile-input {
+    border-color: #000;
+  }
+  #search-mobile-submit {
+    position: absolute;
+    top: 9px;
+    right: 16px;
+    margin: 0 0 0 -23px;
+    font-size: 1em;
+    text-shadow: none;
+    color: #444;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    background: none;
+  }
+}
+
+/* content */
+.middle {
+  padding-bottom: 4em;
+  overflow: hidden;
+}
+
+/* --------------- MEDIA QUERIES ---------------- */
+@media (min-width: 768px) and (max-width: 979px) {
+  .wrapper > .row {
+    width: 80%;
+  }
+  /* SIDEBAR */
+  .widget {
+    input[type=text], textarea {
+      width: 90%;
+      margin-right: 0;
+    }
+  }
+  #secondary .flickr-badges {
+    margin-right: -2em;
+  }
+}
+
+@media (max-width: 767px) {
+  .wrapper > .row {
+    width: 90%;
+  }
+  /* NAVIGATION */
+  .main-navigation {
+    div.selector {
+      display: block;
+    }
+    > ul {
+      display: none;
+    }
+  }
+  h1, .blog-posts .entry-title {
+    font-size: 1.3em;
+  }
+  h1.site-title {
+    font-size: 4em;
+    margin-bottom: .16em;
+    img {
+      max-height: 160px;
+    }
+  }
+  .main-navigation {
+    > ul {
+      padding: .4em 0;
+      > li {
+        padding: .5em 0;
+      }
+    }
+    ul ul {
+      top: 2.5em;
+    }
+  }
+}
+
+/* forms */
+
+label {
+  display: block;
+  font-size: .9em;
+  margin-bottom: .2em;
+}
+
+input:not([type=submit]):not([type=button]):not([type=file]):not([type=radio]):not([type=checkbox]), textarea, select {
+  padding: .7em;
+  width: 262px;
+  max-width: 100%;
+  font-size: .9em;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  background: #fff;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+input:not([type=submit]):not([type=button]):not([type=file]):not([type=radio]):not([type=checkbox]):focus, textarea:focus, input:focus, select:focus, div.uploader:hover {
+  border-color: #aaa;
+  outline: 0;
+}
+
+select {
+  min-width: 262px;
+}
+
+textarea {
+  width: 41%;
+  min-width: 262px;
+  min-height: 10em;
+}
+
+.inline-label {
+  display: inline-block;
+  margin-right: 2em;
+}
+
+/**
+ * Icons
+ */
+.icon {
+
+    > svg {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+
+        path {
+            fill: $grey-color;
+        }
+    }
+}
+
+/**
+ * Clearfix
+ */
+%clearfix {
+
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+%vertical-rhythm {
+    margin-bottom: $spacing-unit / 2;
+}

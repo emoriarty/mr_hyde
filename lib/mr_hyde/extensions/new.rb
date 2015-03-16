@@ -5,6 +5,10 @@ module MrHyde
   module Extensions
     class New < Jekyll::Commands::New 
       class << self
+        def subsite_template
+          File.expand_path "../../subsite_template", File.dirname(__FILE__)
+        end
+
         def template
           site_template
         end
@@ -24,6 +28,8 @@ module MrHyde
 
           if options["blank"]
             create_blank_site new_blog_path, options
+          elsif options["full"]
+            create_independant_sample_files args, options
           else 
             create_sample_files new_blog_path, options
 
@@ -35,33 +41,33 @@ module MrHyde
           Jekyll.logger.info "New jekyll site installed in #{new_blog_path}."
         end
 
-        def create_customizable_blank_site(path)
-          FileUtils.mkdir(%w(_layouts _posts _drafts _sass))
-        end
-
         def create_blank_site(path, opts)
           Dir.chdir(path) do
-            create_customizable_blank_site(path) if opts['custom']
+            FileUtils.mkdir(%w(_posts _drafts))
             FileUtils.touch("index.html")
           end
         end
 
-        def create_customizable_sample_files(path)
-          FileUtils.cp_r site_template + '/.', path
+        def create_sample_files(path, opts)
+          FileUtils.cp_r subsite_template + '/.', path
+          FileUtils.cp_r subsite_template + '/_posts', path
           FileUtils.rm File.expand_path(scaffold_path, path) 
         end
+        
+        def create_independant_sample_files(args, opts)
+          Jekyll::Commands::New.process args, opts
+        end
 
-        def create_sample_files(path, opts)
-          if opts['custom']
-            create_customizable_sample_files path
-          else
-            FileUtils.cp site_template + '/index.html', path
-            FileUtils.cp site_template + '/feed.xml', path
-            FileUtils.cp site_template + '/about.md', path
-            FileUtils.cp_r site_template + '/_posts', path
-            FileUtils.cp_r site_template + '/css', path
-            FileUtils.rm File.expand_path(scaffold_path, path) 
-          end
+        def scaffold_post_content
+            ERB.new(File.read(File.expand_path(scaffold_path, subsite_template))).result
+        end
+
+        def initialized_post_name
+          "_posts/#{Time.now.strftime('%Y-%m-%d')}-welcome-to-mr-hyde.markdown"
+        end
+
+        def scaffold_path
+          "_posts/0000-00-00-welcome-to-mr-hyde.markdown.erb"
         end
      end
     end

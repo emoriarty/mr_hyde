@@ -5,8 +5,10 @@
 - [ ] Improve and document mrhyde config options.
 
 ## Branch "server" ##
+- [ ] Modify the site template: One with a complete jekyll, example, another with just Mr. Hyde assets.
+- [ ] Create 2 blank templates for subsite, one with own styles another with main styles
 - [ ] Renaming Blog by Site
-- [x] Read sass assets files from sources/_assets/_sass.
+- [x] The sass converter now look for the sass_dir in sources/_assets/.
 - [ ] Read styles assets from sources/_assets/_css.
 - [ ] Read js assets files from sources/_assets/_js.
 - [ ] Read media files from sources/_assets/_media.

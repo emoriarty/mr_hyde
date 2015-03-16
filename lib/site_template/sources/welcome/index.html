@@ -4,16 +4,25 @@ layout: default
 
 <div class="home">
 
-  <h1 class="page-heading">Sites</h1>
+  <article>
+    <h2 class="article-heading">Your main site</h2>
+    <p>
+    Welcome to your first Mr. Hyde site. This page is a sample that is created by default when you make a new Mr. Hyde site, you can use it as a scaffold for your site or creqte a blank one. You can find this file in root-folder/sources/welcome/index.html. Below you can see a list of sample subsites created at the same time than the parent, click on them to know more about subsites. All sites are created using <a href="http://jekyllrb.com/">Jekyll</a> including the main site. You can read more about Mr. Hyde usage documentation at <a href="https://github.com/emoriarty/mr_hyde/wiki">Mr. Hyde wiki</a>.<br />
+    You can find the source code for the Mr. Hyde at: <a href="https://github.com/emoriarty/mr_hyde/">https://github.com/emoriarty/mr_hyde</a>.
+    </p>
+  </article>
 
-  <ul class="site-list">
-    {% for subsite in site.sites %}
-      <li>
-        <h2>
-          <a class="site-link" href="{{ subsite.baseurl }}">{{ subsite.name }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
+  <article class="row row-fluid">
+    <h2 class="article-heading span4">Sites</h2>
+    <ul class="site-list span8">
+      {% for subsite in site.sites %}
+        <li>
+          <h2>
+            <a class="site-link" href="{{ subsite.baseurl }}">{{ subsite.name }}</a>
+          </h2>
+        </li>
+      {% endfor %}
+    </ul>
+  </article>
 
 </div>

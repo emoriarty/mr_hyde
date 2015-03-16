@@ -36,17 +36,20 @@ $on-laptop:        800px;
 //         padding-left: $spacing-unit / 2;
 //     }
 // }
-@mixin media-query($device) {
-    @media screen and (max-width: $device) {
-        @content;
-    }
-}
+//@mixin media-query($device) {
+//    @media screen and (max-width: $device) {
+//        @content;
+//    }
+//}
 
 
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
-        "base",
+		"functions",
+		"grid",
+        "newbase",
         "layout",
+        "normalize",
         "syntax-highlighting"
 ;
