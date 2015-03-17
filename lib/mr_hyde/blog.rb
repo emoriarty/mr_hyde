@@ -89,9 +89,7 @@ module MrHyde
           end
         else
           build_main_site(opts)
-          #if opts["full"]
-            build_blogs list(MrHyde.sources_sites), opts
-          #end
+          build_blogs list(MrHyde.sources_sites), opts
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
@@ -117,7 +115,8 @@ module MrHyde
       end
 
       def site_path(name)
-        Jekyll.sanitized_path @source, name
+        source = is_main?(name) ? @source : File.join(MrHyde.source, MrHyde.sources_sites)
+        Jekyll.sanitized_path(source , name)
       end
       
       def custom_config(name, opts)
@@ -175,7 +174,7 @@ module MrHyde
       end
 
       def build_main_site(opts)
-        conf = MrHyde.custom_main_configuration(opts)
+        conf = MrHyde.custom_main_configuration
         Jekyll::Commands::Build.process conf
       end
 

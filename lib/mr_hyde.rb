@@ -26,31 +26,28 @@ module MrHyde
       yield(configuration) if block_given?
     end
 
+    # Mr.Hyde Configuration
     def configuration(override = Hash.new)
       @config = private_configuration(override, Configuration::DEFAULTS)
       @source = File.expand_path(config['source']).freeze
       @config
     end
     
+    # Jekyll Configuration
     def custom_main_configuration(override = Hash.new)
-      jekyll_config = jekyll_main_defaults
       # The order is important here, the last one overrides the previous ones
-      if override['config'].nil? or override['config'].blank?
-        override['config'] = []
-        override['config'] << config['jekyll_config'] if has_jekyll_config?
-        override['config'] << Blog.custom_config(config['mainsite'], config) if Blog.has_custom_config?(config['mainsite'], config)
-      end
-
-      Jekyll::Utils.deep_merge_hashes(jekyll_config, override)
+      custom_configuration nil, override
     end
   
-
+    # Jekyll per site configuration
     # _config.yml < sources/sites/site/_config.yml < override
     #
-    def custom_configuration(site_name, override = Hash.new)
+    def custom_configuration(site_name = nil, override = Hash.new)
       jekyll_config = jekyll_defaults(site_name)
+      site_name ||= config['mainsite']
+
       # The order is important here, the last one overrides the previous ones
-      if override['config'].nil? or override['config'].blank?
+      if override['config'].nil? or override['config'].empty?
         override['config'] = []
         override['config'] << config['jekyll_config'] if has_jekyll_config?
         override['config'] << Blog.custom_config(site_name, config) if Blog.has_custom_config?(site_name, config)
@@ -58,22 +55,20 @@ module MrHyde
 
       Jekyll::Utils.deep_merge_hashes(jekyll_config, override)
     end
-
-    def jekyll_main_defaults
-      { 
-        'source'      => File.join(sources, config['mainsite']), 
-        'destination' => File.join(destination),
-        'layouts'     => File.join(sources, config['layouts'])
-      }
-    end
     
-    def jekyll_defaults(site_name)
-      { 
-        'source'      => File.join(MrHyde.sources_sites, site_name), 
-        'destination' => File.join(MrHyde.destination, site_name),
-        'layouts'     => File.join(MrHyde.sources, config['layouts']),
-        'baseurl'     => '/' + site_name
-      }
+    # If no site name is passed in then the configuration defaults are set for the main site
+    def jekyll_defaults(site_name = nil)
+      conf = if site_name
+        { 'baseurl'     => '/' + site_name,
+          'destination' => File.join(MrHyde.destination, site_name),
+          'source'      => File.join(MrHyde.sources_sites, site_name) }
+      else
+        site_name = config['mainsite']
+        { 'source' => File.join(sources, site_name),
+          'destination' => File.join(MrHyde.destination) }
+      end
+
+      conf.merge({ 'layouts' => File.join(MrHyde.sources, config['layouts']) })
     end
 
     def has_jekyll_config?
