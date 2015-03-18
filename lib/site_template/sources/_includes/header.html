@@ -8,10 +8,10 @@
     </hgroup>
 
     <nav class="main-navigation" role="navigation">
-      <ul>
-        {% for page in site.pages %}
+      <ul data-baseurl="{{ site.baseurl }}">
+        {% for page in site.pages reversed %}
           {% if page.title %}
-          <li class="current-menu-item">
+          <li id="{{ page.id }}">
             <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
           </li>
           {% endif %}
