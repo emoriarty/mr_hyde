@@ -6,7 +6,7 @@ require "jekyll/log_adapter"
 require "jekyll/utils"
 
 require "mr_hyde/version"
-require "mr_hyde/blog"
+require "mr_hyde/site"
 require "mr_hyde/configuration"
 require "mr_hyde/commands/new"
 require "mr_hyde/commands/build"
@@ -34,26 +34,26 @@ module MrHyde
     end
     
     # Jekyll Configuration
-    def custom_main_configuration(override = Hash.new)
+    def main_site_configuration
       # The order is important here, the last one overrides the previous ones
-      custom_configuration nil, override
+      site_configuration nil
     end
   
     # Jekyll per site configuration
+    # This method gets the config files which must be read from jekyll. 
     # _config.yml < sources/sites/site/_config.yml < override
     #
-    def custom_configuration(site_name = nil, override = Hash.new)
+    def site_configuration(site_name = nil)
       jekyll_config = jekyll_defaults(site_name)
       site_name ||= config['mainsite']
+      opts = {}
 
-      # The order is important here, the last one overrides the previous ones
-      if override['config'].nil? or override['config'].empty?
-        override['config'] = []
-        override['config'] << config['jekyll_config'] if has_jekyll_config?
-        override['config'] << Blog.custom_config(site_name, config) if Blog.has_custom_config?(site_name, config)
-      end
+      # The order is important here, the last one overrides the previous one
+      opts['config'] = []
+      opts['config'] << Jekyll.sanitized_path(source, config['jekyll_config']) if has_jekyll_config?
+      opts['config'] << Site.custom_config(site_name, config) if Site.has_custom_config?(site_name, config)
 
-      Jekyll::Utils.deep_merge_hashes(jekyll_config, override)
+      jekyll_config.merge(opts)
     end
     
     # If no site name is passed in then the configuration defaults are set for the main site
@@ -100,7 +100,7 @@ module MrHyde
 
     # Creates the folders for the sources and destination, 
     # by default will be created under root folder.
-    # Copies the default _config.yml for all blogs, in root folder.
+    # Copies the default _config.yml for all sites, in root folder.
     #
     # Throws a SystemExit exception
     #
@@ -136,11 +136,11 @@ module MrHyde
       # Copying the original _config.yml from jekyll to mrhyde folder
       # jekyll_config = MrHyde::Extensions::New.default_config_file
       # FileUtils.copy_file(jekyll_config, File.join(path, File.basename(jekyll_config)))
-      # Creating the default jekyll blog in mrhyde
+      # Creating the default jekyll site in mrhyde
       Dir.chdir(path) do
         FileUtils.mkdir(%w(sources)) unless File.exist? 'sources'
-        Blog.create ['sample-site'], { 'force' => 'force' }
-        Blog.create ['sample-full-site'], { 'full' => 'full', 'force' => 'force' }
+        Site.create ['sample-site'], { 'force' => 'force' }
+        Site.create ['sample-full-site'], { 'full' => 'full', 'force' => 'force' }
       end
 
     end

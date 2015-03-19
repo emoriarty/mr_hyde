@@ -20,25 +20,25 @@ module MrHyde
         def process(args, options = {})
           raise ArgumentError.new('You must specify a path.') if args.empty?
 
-          new_blog_path = File.expand_path(args.join(" "), Dir.pwd)
-          FileUtils.mkdir_p new_blog_path
-          if preserve_source_location?(new_blog_path, options)
-            Jekyll.logger.abort_with "Conflict:", "#{new_blog_path} exists and is not empty."
+          new_site_path = File.expand_path(args.join(" "), Dir.pwd)
+          FileUtils.mkdir_p new_site_path
+          if preserve_source_location?(new_site_path, options)
+            Jekyll.logger.abort_with "Conflict:", "#{new_site_path} exists and is not empty."
           end
 
           if options["blank"]
-            create_blank_site new_blog_path, options
+            create_blank_site new_site_path, options
           elsif options["full"]
             create_independant_sample_files args, options
           else 
-            create_sample_files new_blog_path, options
+            create_sample_files new_site_path, options
 
-            File.open(File.expand_path(initialized_post_name, new_blog_path), "w") do |f|
+            File.open(File.expand_path(initialized_post_name, new_site_path), "w") do |f|
               f.write(scaffold_post_content)
             end
           end
 
-          Jekyll.logger.info "New jekyll site installed in #{new_blog_path}."
+          Jekyll.logger.info "New jekyll site installed in #{new_site_path}."
         end
 
         def create_blank_site(path, opts)

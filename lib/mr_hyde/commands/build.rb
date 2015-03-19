@@ -4,7 +4,7 @@ require "mr_hyde"
 require "mr_hyde/configuration"
 require "mr_hyde/extensions/new"
 require "mr_hyde/command"
-require "mr_hyde/blog"
+require "mr_hyde/site"
 
 module MrHyde
   module Commands
@@ -12,7 +12,7 @@ module MrHyde
       class << self
         # Options
         def process(args, opts = {})
-          MrHyde::Blog.build args, opts
+          MrHyde::Site.build args, opts
         end
       end
     end

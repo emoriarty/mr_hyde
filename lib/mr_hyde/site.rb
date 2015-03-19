@@ -5,7 +5,7 @@ require "mr_hyde/configuration"
 
 # TODO: The site place must be taken from the default config or the one provided by user
 module MrHyde
-  class Blog
+  class Site
     class << self
       def init(args, opts)
         opts = MrHyde.configuration(opts)
@@ -17,11 +17,11 @@ module MrHyde
         yield if block_given?
       end
 
-      # Creates the directory and necessary files for the blog
+      # Creates the directory and necessary files for the site
       # args
       #   :name
-      #     String => creates the concrete blog
-      #     Array[String] => creates the correspondings blog names
+      #     String => creates the concrete site
+      #     Array[String] => creates the correspondings site names
       # Returns
       #   boolean
       def create(args, opts = {})
@@ -30,20 +30,20 @@ module MrHyde
         if args.kind_of? Array and not args.empty?
           args.each do |bn| 
             begin
-              create_blog(bn, opts)
+              create_site(bn, opts)
             rescue Exception => e
               raise e unless e.class == SystemExit
             end
           end
         elsif args.kind_of? String
-          create_blog args, opts
+          create_site args, opts
         end
       rescue Exception => e
-        MrHyde.logger.error "cannot create blog: #{e}"
+        MrHyde.logger.error "cannot create site: #{e}"
         MrHyde.logger.error e.backtrace
       end
 
-      # Removes the blog directory
+      # Removes the site directory
       # Params:
       #   Hash[:path] (String)
       # Returns
@@ -54,26 +54,27 @@ module MrHyde
         unless is_main?
           if opts['all']
             list(MrHyde.sources_sites).each do |sm|
-              remove_blog sm, opts
+              remove_site sm, opts
             end
           elsif args.kind_of? Array
             args.each do |sm|
-              remove_blog sm, opts
+              remove_site sm, opts
             end
           else
-            remove_blog args, opts
+            remove_site args, opts
           end
         end
       rescue Exception => e
-        MrHyde.logger.error "cannot remove the blog: #{e}"
+        MrHyde.logger.error "cannot remove the site: #{e}"
+        MrHyde.logger.error e.backtrace
       end
 
-      # Builds the blog
+      # Builds the site
       # Params:
       #   :name
-      #     String => builds the concrete blog
-      #     Array[String] => builds the correspondings blog names
-      #     empty => It builds all blogs
+      #     String => builds the concrete site
+      #     Array[String] => builds the correspondings site names
+      #     empty => It builds all sites
       # Returns
       #   boolean
       def build(args, opts = {})
@@ -81,15 +82,15 @@ module MrHyde
 
         unless opts.delete('main')
           if opts["all"]
-            build_blogs list(MrHyde.sources_sites), opts
+            build_sites list(MrHyde.sources_sites), opts
           elsif args.kind_of? Array
-            build_blogs args, opts 
+            build_sites args, opts 
           elsif args.kind_of? String
-            build_blog args, opts
+            build_site args, opts
           end
         else
           build_main_site(opts)
-          build_blogs list(MrHyde.sources_sites), opts
+          build_sites list(MrHyde.sources_sites), opts
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
@@ -129,7 +130,7 @@ module MrHyde
 
       private
 
-      def create_blog(args, opts = {})
+      def create_site(args, opts = {})
         begin
           if args.kind_of? Array
             args.each do |name|
@@ -146,7 +147,7 @@ module MrHyde
         exist? args, opts
       end
 
-      def remove_blog(name, opts = {})
+      def remove_site(name, opts = {})
         if opts['full'] and File.exist? File.join(MrHyde.sources_sites, name)
           FileUtils.remove_dir File.join(MrHyde.sources_sites, name)
           MrHyde.logger.info "#{name} removed from #{MrHyde.sources_sites}"
@@ -157,30 +158,31 @@ module MrHyde
         end
       end
 
-      def build_blogs(site_names, opts)
+      def build_sites(site_names, opts)
         site_names.each do |sn| 
           begin
-            build_blog(sn, opts)
+            build_site(sn, opts)
           rescue Exception => e
             MrHyde.logger.error e
           end
         end
       end
 
-      def build_blog(name, opts)
-        conf = MrHyde.custom_configuration(name)
+      def build_site(name, opts)
+        conf = MrHyde.site_configuration(name)
+        puts conf
         Jekyll::Commands::Build.process conf
         built? name, opts
       end
 
       def build_main_site(opts)
-        conf = MrHyde.custom_main_configuration
+        conf = MrHyde.main_site_configuration
         Jekyll::Commands::Build.process conf
       end
 
 
-      def check_blog(blog_name, method, message)
-        if not send(method, blog_name)
+      def check_site(site_name, method, message)
+        if not send(method, site_name)
           MrHyde.logger.debug message
           return false
         end

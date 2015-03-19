@@ -6,18 +6,13 @@ require "mr_hyde"
 require "mr_hyde/configuration"
 require "mr_hyde/extensions/new"
 require "mr_hyde/command"
-require "mr_hyde/blog"
+require "mr_hyde/site"
 
 module MrHyde
   module Commands
     class New < MrHyde::Command
       class << self
-        # Options
-        #  :type => what type of element we want to create [:blog|:site]
-        #     by default it creates a new MrHyde site
-        # if :type is :blog then
-        #   :name => blog's name
-        #
+        
         def process(args, opts = {})
           case args.delete(:type)
             when :site then new_site(args[:args], opts)
@@ -35,7 +30,7 @@ module MrHyde
           end
 
           def new_site(args, opts)
-            Blog.create(args, opts)
+            Site.create(args, opts)
           end
       end
     end
