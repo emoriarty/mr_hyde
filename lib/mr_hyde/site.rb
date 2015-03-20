@@ -104,7 +104,7 @@ module MrHyde
       end
 
       def exist?(name, opts)
-        File.exist? File.join(MrHyde.sources_sites, name)
+        File.exist? File.join(@source, name)
       end
         
       def built?(name, opts)
@@ -125,7 +125,7 @@ module MrHyde
       end
       
       def is_main?(name)
-        File.directory? File.join(@source, name)
+        File.directory? File.join(MrHyde.sources, name)
       end
 
       private
@@ -170,7 +170,6 @@ module MrHyde
 
       def build_site(name, opts)
         conf = MrHyde.site_configuration(name)
-        puts conf
         Jekyll::Commands::Build.process conf
         built? name, opts
       end

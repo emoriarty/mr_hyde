@@ -36,7 +36,6 @@ Mercenary.program(:mrhyde) do |p|
 
       snew.option "force", "--force", "Force creation even if PATH already exists"
       snew.option "blank", "--blank", "Creates scaffolding but with empty files"
-      snew.option "custom", "--custom", "Creates basic files to customize a site"
 
       snew.action do |args, options|
         MrHyde::Commands::New.process({ :type => :site, :args => args }, options)
@@ -49,7 +48,7 @@ Mercenary.program(:mrhyde) do |p|
 
       srm.alias(:rm)
 
-      srm.option "force", "--force", "Don't ask for remove blog"
+      #srm.option "force", "--force", "Don't ask for remove blog"
       srm.option "all", "--all", "Remove all built sites. This option works alone."
       srm.option "full", "--full", "Remove all built and draft site or sites. This option can be used with the rest of options."
 
