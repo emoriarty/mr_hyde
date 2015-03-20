@@ -16,10 +16,10 @@ Mercenary.program(:mrhyde) do |p|
   p.syntax "mrhyde <subcommand>"
 
   p.command(:new) do |c|
-    c.syntax "new <subcommand>"
-    c.description "Creates a new Mr. Hyde site scaffold in path"
-    c.option "force", "--force", "Force creation even if PATH already exists"
-    c.option "blank", "--blank", "Creates scaffolding but with empty files"
+    c.syntax "new [PATH]"
+    c.description "Creates a new Mr. Hyde site scaffold in path or current path."
+    c.option "force", "--force", "Force creation even if PATH already exists."
+    c.option "blank", "--blank", "Creates scaffolding but with empty files."
 
     c.action do |args, options|
       MrHyde::Commands::New.process(args, options)
@@ -35,7 +35,7 @@ Mercenary.program(:mrhyde) do |p|
       snew.description "Creates a new Jekyll site or sites"
 
       snew.option "force", "--force", "Force creation even if PATH already exists"
-      snew.option "blank", "--blank", "Creates scaffolding but with empty files"
+      snew.option "blank", "--blank", "Creates scaffolding with empty files and no nested site"
 
       snew.action do |args, options|
         MrHyde::Commands::New.process({ :type => :site, :args => args }, options)
@@ -49,8 +49,8 @@ Mercenary.program(:mrhyde) do |p|
       srm.alias(:rm)
 
       #srm.option "force", "--force", "Don't ask for remove blog"
-      srm.option "all", "--all", "Remove all built sites. This option works alone."
-      srm.option "full", "--full", "Remove all built and draft site or sites. This option can be used with the rest of options."
+      srm.option "all", "--all", "Remove all built sites."
+      srm.option "full", "--full", "Remove all built and source site/s. This option can be used with the rest of options."
 
       srm.action do |args, options|
         MrHyde::Commands::Remove.process(args, options)
@@ -59,9 +59,9 @@ Mercenary.program(:mrhyde) do |p|
     
     site.command(:build) do |sbuild|
       sbuild.syntax "build name[ name ... n] "
-      sbuild.description "Build the named blog or blogs, by default if no name is indicated then all blog will be built"
+      sbuild.description "Build the named site or sites. By default if no name is indicated then all sites will be build."
 
-      sbuild.option "all", "--all", "Build all blogs"
+      sbuild.option "all", "--all", "Build all nested sites"
 
       sbuild.action do |args, options|
         MrHyde::Commands::Build.process args, options
@@ -93,7 +93,7 @@ Mercenary.program(:mrhyde) do |p|
     build.syntax "build"
     build.description "Build the main site"
 
-    build.option "full", "--full", "Builds main site and subsites"
+    build.option "full", "--full", "Builds main site and nested sites."
 
     build.action do |args, options|
       options['main'] = true
