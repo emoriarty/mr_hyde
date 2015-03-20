@@ -1,7 +1,6 @@
-require "logger"
 require "fileutils"
+require "logger"
 
-require "jekyll/stevenson"
 require "jekyll/log_adapter"
 require "jekyll/utils"
 
@@ -113,7 +112,6 @@ module MrHyde
       end
 
       if opts['blank']
-        # TODO create blank site
         create_blank_site new_site_path
       else
         create_sample_files new_site_path
@@ -142,7 +140,18 @@ module MrHyde
         Site.create ['sample-site'], { 'force' => 'force' }
         Site.create ['sample-full-site'], { 'full' => 'full', 'force' => 'force' }
       end
+    end
 
+    def create_blank_site(path)
+      Dir.chdir(path) do
+        FileUtils.mkdir('sources')
+        Dir.chdir('sources') do 
+          FileUtils.mkdir %w(_layouts _includes main_site) 
+        end
+        Dir.chdir(File.join('sources', 'main_site')) do
+          FileUtils.touch 'index.html' 
+        end
+      end
     end
 
     def site_template
