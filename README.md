@@ -1,8 +1,8 @@
 <img src="https://raw.githubusercontent.com/emoriarty/mr_hyde/master/resources/mrhyde-logo.png" alt="Mr.Hyde logo" height="100"/>
 # MrHyde
-Mr. Hyde lets you generate and manage as many sites as you want.
+Mr. Hyde lets you generate and manage as many static sites as you like, all nested from a parent site, for example, you can have several nested sites sharing the same assets than the parent site and other nested sites with its own assets.
 
-It's based on [Jekyll](https://github.com/jekyll/jekyll), in fact Mr. Hyde wraps Jekyll to give you the possibilty of managing many sites.
+All this work thanks to [Jekyll](http://jekyllrb.com) in fact Mr. Hyde wraps Jekyll so if you know Jekyll there is no much to learn about Mr. Hyde.
 
 The current version is based on [Jekyll 2.5.3](https://github.com/jekyll/jekyll/tree/v2.5.3).
 
