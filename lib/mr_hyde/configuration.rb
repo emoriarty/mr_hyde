@@ -15,14 +15,13 @@ module MrHyde
       'config'        => '_mrhyde.yml',
       'jekyll_config' => '_config.yml',
       'assets'        => '_assets',
-      'mainsite'      => 'main',
+      'mainsite'      => 'main_site',
       # Serving
       'detach'  => false, # default to not detaching the server
       'port'    => '4000',
       'host'    => '127.0.0.1',
-      'baseurl' => '',
+      'baseurl' => ''
     }
-
 
     def read_config_files(files)
       configuration = clone

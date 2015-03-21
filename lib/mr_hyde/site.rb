@@ -3,7 +3,6 @@ require "fileutils"
 require "mr_hyde"
 require "mr_hyde/configuration"
 
-# TODO: The site place must be taken from the default config or the one provided by user
 module MrHyde
   class Site
     class << self
@@ -18,12 +17,15 @@ module MrHyde
       end
 
       # Creates the directory and necessary files for the site
-      # args
-      #   :name
+      # Params:
+      #   args
       #     String => creates the concrete site
       #     Array[String] => creates the correspondings site names
-      # Returns
-      #   boolean
+      #   opts
+      #     Hash 
+      #       'force' => 'force' Install the new site over an exiting path
+      #       'blank' => 'blank' Creates a blank site
+      #
       def create(args, opts = {})
         init(args, opts)
 
@@ -45,24 +47,28 @@ module MrHyde
 
       # Removes the site directory
       # Params:
-      #   Hash[:path] (String)
-      # Returns
-      #   boolean
+      #   args
+      #     String => removes the concrete site
+      #     Array[String] => removes the correspondings site names
+      #     empty => remove all sites with the option 'all'
+      #   opts
+      #     Hash 
+      #       'all' => 'all' Removes all built sites
+      #       'full' => 'full' Removes built and source site/s
+      #
       def remove(args, opts = {})
         init(args, opts)
 
-        unless is_main?
-          if opts['all']
-            list(MrHyde.sources_sites).each do |sm|
-              remove_site sm, opts
-            end
-          elsif args.kind_of? Array
-            args.each do |sm|
-              remove_site sm, opts
-            end
-          else
-            remove_site args, opts
+        if opts['all']
+          list(MrHyde.sources_sites).each do |sm|
+            remove_site sm, opts
           end
+        elsif args.kind_of? Array
+          args.each do |sm|
+            remove_site sm, opts
+          end
+        else
+          remove_site args, opts
         end
       rescue Exception => e
         MrHyde.logger.error "cannot remove the site: #{e}"
@@ -74,9 +80,11 @@ module MrHyde
       #   :name
       #     String => builds the concrete site
       #     Array[String] => builds the correspondings site names
-      #     empty => It builds all sites
-      # Returns
-      #   boolean
+      #     empty => builds all sites with option 'all'
+      #   opts
+      #     Hash 
+      #       'all' => 'all' Builds all built sites
+      #
       def build(args, opts = {})
         init(args, opts)
 
@@ -97,6 +105,8 @@ module MrHyde
         MrHyde.logger.error e.backtrace
       end
 
+      # This method returns a list of nested sites
+      #
       def list(path)
         entries = Dir.entries(path)
         entries.reject! { |item| item == '.' or item == '..' }
@@ -148,6 +158,13 @@ module MrHyde
       end
 
       def remove_site(name, opts = {})
+        # OBSOLOTE
+        # This checking is not mandatory, never can be removed form here the main site
+        if is_main?(name)
+          MrHyde.logger.warning "Cannot remove main site: #{name}"
+          return
+        end
+
         if opts['full'] and File.exist? File.join(MrHyde.sources_sites, name)
           FileUtils.remove_dir File.join(MrHyde.sources_sites, name)
           MrHyde.logger.info "#{name} removed from #{MrHyde.sources_sites}"

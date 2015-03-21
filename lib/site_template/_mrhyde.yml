@@ -1,2 +1,2 @@
 # Mr. Hyde settings
-mainsite: "welcome" # this is the name of the root default site, where all sites will be nested
+mainsite: "main_site" # this is the name of the root default site, where all sites will be nested

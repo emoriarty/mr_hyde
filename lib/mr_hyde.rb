@@ -28,7 +28,9 @@ module MrHyde
     # Mr.Hyde Configuration
     def configuration(override = Hash.new)
       @config = private_configuration(override, Configuration::DEFAULTS)
-      @source = File.expand_path(config['source']).freeze
+      @source = File.expand_path(config['source'])
+      @source = Dir.pwd unless @source == Dir.pwd
+      @source = @source.freeze
       @config
     end
     

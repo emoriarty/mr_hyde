@@ -1,53 +1,81 @@
 require "minitest/autorun"
 require "minitest/pride"
-require "mr_hyde"
-require "mr_hyde/blog"
 require "fileutils"
+require_relative "../lib/mr_hyde"
+require_relative "../lib/mr_hyde/site"
 
-describe "MrHyde" do
+describe "Checking if mrhyde can create new sites" do
   before do
-    #@path = Dir.mktmpdir('mrhyde_new_test')
-    @path = 'mrhyde_new_test'
+    @tmp_dir = Dir.mktmpdir('mrhyde_new_test')
+    Dir.chdir(@tmp_dir)
+    @site_name = 'test'
+    @nested_site_name = 'nested_site'
+    @defaults = MrHyde::Configuration::DEFAULTS
   end
 
   after do
-    FileUtils.remove_dir(@path) if File.exist? @path
+    FileUtils.remove_dir(@site_name) if File.exist? @site_name
   end
 
-  it "creates a new MrHyde folder with the basics" do
-    MrHyde.create @path
+  it "creates a new MrHyde folder" do
+    MrHyde.create @site_name
     
-    File.exist?(@path).must_be :==, true
-    File.exist?(File.join @path, MrHyde::Configuration::DEFAULTS['sources']).must_be :==, true
-    File.exist?(File.join @path, MrHyde::Configuration::DEFAULTS['destination']).must_be :==, true
-    File.exist?(File.join @path, MrHyde::Configuration::DEFAULTS['config']).must_be :==, true
-    File.exist?(File.join @path, MrHyde::Configuration::DEFAULTS['jekyll_config']).must_be :==, true
+    File.exist?(@site_name).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['config']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['jekyll_config']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['layouts']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['includes']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['assets']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['mainsite']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['sources_sites']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['mainsite'], 'index.md').must_be :==, true
   end
 
-  it "cannot create over an existing project" do
-    MrHyde.create @path
-    lambda { MrHyde.create @path }.must_raise SystemExit
+  it "creates a new MrHyde blank folder" do
+    MrHyde.create @site_name, 'blank' => true 
+    
+    File.exist?(@site_name).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['config']).must_be :==, false
+    File.exist?(File.join @site_name, @defaults['jekyll_config']).must_be :==, false
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['layouts']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['includes']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['assets']).must_be :==, false
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['mainsite']).must_be :==, true
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['sources_sites']).must_be :==, false
+    File.exist?(File.join @site_name, @defaults['sources'], @defaults['mainsite'], 'index.html').must_be :==, true
   end
 
-  describe "creating new sites" do
+  it "cannot create over an existing folder" do
+    MrHyde.create @site_name
+    lambda { MrHyde.create @site_name }.must_raise SystemExit
+  end
+
+  it "force create over an existing folder" do
+    MrHyde.create @site_name
+    lambda { MrHyde.create(@site_name, 'force' => true)}.must_be_silent
+  end
+
+  describe "nested sites" do
     before do
-      MrHyde.create @path
+      MrHyde.create @site_name
     end
       
     it "can create a single site" do 
-      Dir.chdir(File.join Dir.pwd, @path) do
-        MrHyde::Blog.create 'site_test'
-        File.exist?(File.join MrHyde::Configuration::DEFAULTS['sources'], 'site_test').must_be :==, true
+      Dir.chdir(@site_name) do
+        MrHyde::Site.create @nested_site_name
+        File.exist?(File.join @defaults['sources'], @defaults['sources_sites'],  @nested_site_name).must_be :==, true
       end
     end
 
     it "can create an array of sites" do 
-      Dir.chdir(File.join Dir.pwd, @path) do
+      Dir.chdir(@site_name) do
         arr_blog_names = []
-        10.times { |i| arr_blog_names << "site_test_#{i}" }
-        MrHyde::Blog.create arr_blog_names
+        10.times { |i| arr_blog_names << "#{@nested_site_name}_#{i}" }
+        MrHyde::Site.create arr_blog_names
         arr_blog_names.each do |bn|
-          File.exist?(File.join MrHyde::Configuration::DEFAULTS['sources'], bn).must_be :==, true
+          File.exist?(File.join @defaults['sources'], @defaults['sources_sites'], bn).must_be :==, true
         end
       end
     end
