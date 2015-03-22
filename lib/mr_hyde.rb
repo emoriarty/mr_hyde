@@ -11,6 +11,7 @@ require "mr_hyde/commands/new"
 require "mr_hyde/commands/build"
 
 module MrHyde
+  require "mr_hyde/jekyll_ext/jekyll"
   require "mr_hyde/jekyll_ext/site"
   require "mr_hyde/jekyll_ext/tags/include"
   require "mr_hyde/jekyll_ext/converters/scss"
@@ -96,7 +97,11 @@ module MrHyde
     #
     # Returns the LogAdapter instance.
     def logger
-      Jekyll.logger
+      @logger = LogAdapter.new(Stevenson.new, (ENV['MRHYDE_LOG_LEVEL'] || :info).to_sym)
+    end
+
+    def logger=(writer)
+      @logger = LogAdapter.new(writer)
     end
 
     # Creates the folders for the sources and destination, 
@@ -133,6 +138,7 @@ module MrHyde
 
     def create_sample_files(path)
       FileUtils.cp_r site_template + '/.', path
+      MrHyde.logger.info "New Mr. Hyde Site installed in #{path}"
       # Copying the original _config.yml from jekyll to mrhyde folder
       # jekyll_config = MrHyde::Extensions::New.default_config_file
       # FileUtils.copy_file(jekyll_config, File.join(path, File.basename(jekyll_config)))
@@ -154,6 +160,7 @@ module MrHyde
           FileUtils.touch 'index.html' 
         end
       end
+      MrHyde.logger.info "New Mr. Hyde Site installed in #{path}"
     end
 
     def site_template

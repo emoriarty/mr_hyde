@@ -24,7 +24,6 @@ module MrHyde
 
           def scaffold(args, opts)
             new_site_path = MrHyde.create args, opts
-            MrHyde.logger.info "New Mr. Hyde Site installed in #{new_site_path}"
           rescue SystemExit => se
             MrHyde.logger.abort_with "Conflict:", se.message
           end

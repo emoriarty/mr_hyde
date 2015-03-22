@@ -42,7 +42,6 @@ module MrHyde
         end
       rescue Exception => e
         MrHyde.logger.error "cannot create site: #{e}"
-        MrHyde.logger.error e.backtrace
       end
 
       # Removes the site directory
@@ -72,7 +71,6 @@ module MrHyde
         end
       rescue Exception => e
         MrHyde.logger.error "cannot remove the site: #{e}"
-        MrHyde.logger.error e.backtrace
       end
 
       # Builds the site
@@ -89,6 +87,9 @@ module MrHyde
         init(args, opts)
 
         unless opts.delete('main')
+          # If there is no main sitem then it is built
+          build_main_site(opts) unless File.exist? MrHyde.destination
+
           if opts["all"]
             build_sites list(MrHyde.sources_sites), opts
           elsif args.kind_of? Array
@@ -102,7 +103,6 @@ module MrHyde
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
-        MrHyde.logger.error e.backtrace
       end
 
       # This method returns a list of nested sites
@@ -154,6 +154,7 @@ module MrHyde
         end
 
         MrHyde::Extensions::New.process [File.join(MrHyde.sources_sites, args)], opts
+        MrHyde.logger.info "New #{args} created in #{MrHyde.sources_sites}"
         exist? args, opts
       end
 
@@ -188,6 +189,7 @@ module MrHyde
       def build_site(name, opts)
         conf = MrHyde.site_configuration(name)
         Jekyll::Commands::Build.process conf
+        MrHyde.logger.info "#{name} built in #{MrHyde.destination}"
         built? name, opts
       end
 
