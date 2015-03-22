@@ -9,6 +9,8 @@ require 'mercenary'
 require 'mr_hyde'
 require 'mr_hyde/commands/remove'
 require 'mr_hyde/commands/serve'
+require 'mr_hyde/commands/list'
+
 
 Mercenary.program(:mrhyde) do |p|
   p.version MrHyde::VERSION
@@ -82,7 +84,7 @@ Mercenary.program(:mrhyde) do |p|
 
     serve.action do |args, options|
       options["serving"] = true
-      #options["watch"] = true unless options.key?("watch")
+      options["watch"] = true unless options.key?("watch")
       MrHyde::Commands::Build.process(options['all'] = 'all') if options['build']
       MrHyde::Commands::Serve.process(options)
     end
@@ -101,6 +103,17 @@ Mercenary.program(:mrhyde) do |p|
     end
   end
   
+  p.command(:list) do |list|
+    list.syntax "list"
+    list.description "Shows a list of all sites within sources."
+
+    list.option "built", "--built", "Shows a list of built sites."
+
+    list.action do |args, options|
+      MrHyde::Commands::List.process options
+    end
+  end
+
   p.action do |args, options|
     if args.empty?
       puts p
