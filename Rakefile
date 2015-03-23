@@ -2,6 +2,7 @@ require "bundler/gem_tasks"
 require "rake/testtask"
 
 ENV["JEKYLL_LOG_LEVEL"] = "error"
+ENV["MRHYDE_LOG_LEVEL"] = "error"
 
 Rake::TestTask.new do |t|
   t.libs.push "lib"

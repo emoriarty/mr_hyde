@@ -87,7 +87,7 @@ module MrHyde
         init(args, opts)
 
         unless opts.delete('main')
-          # If there is no main sitem then it is built
+          # If there is no main site then it is built
           build_main_site(opts) unless File.exist? MrHyde.destination
 
           if opts["all"]
@@ -98,11 +98,18 @@ module MrHyde
             build_site args, opts
           end
         else
-          build_main_site(opts)
-          build_sites list(MrHyde.sources_sites), opts
+          # Fetching the list of built sites to rebuild again once the main site has been built
+          if File.exist? MrHyde.destination
+            nested_sites = built_list
+            build_main_site(opts)
+            build_sites nested_sites, opts
+          else
+            build_main_site(opts)
+          end
         end
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
+        MrHyde.logger.error e.backtrace
       end
 
       # This method returns a list of nested sites
@@ -111,6 +118,20 @@ module MrHyde
         entries = Dir.entries(path)
         entries.reject! { |item| item == '.' or item == '..' }
         entries
+      end
+
+      def sources_list
+        list MrHyde.sources_sites
+      end
+
+      def built_list
+        return [] unless File.exist? MrHyde.destination
+        sources = sources_list
+        builts  = list(MrHyde.destination)
+
+        builts.select do |site|
+          site if sources.include?(site)
+        end
       end
 
       def exist?(name, opts)

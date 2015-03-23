@@ -9,7 +9,9 @@ Welcome to your first Mr. Hyde site. This page is a sample that is created by de
 
 You can find the source code for the Mr. Hyde at: <a href="https://github.com/emoriarty/mr_hyde/">https://github.com/emoriarty/mr_hyde</a>.
 
+{% if site.sites %}
 ## Sites
 {% for subsite in site.sites %}
 * [{{ subsite.name }}]({{ subsite.baseurl}})
 {% endfor %}
+{% endif %}

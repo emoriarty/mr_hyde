@@ -27,12 +27,10 @@ class Site
     payload = pristine_site_payload
 
     if source == MrHyde.main_site
-      path = File.join(MrHyde.source, MrHyde.sources_sites)
-      site_names = Dir.entries(path).select do |entry|
-        File.directory?(File.join(path, entry)) and !(entry == '.' or entry == '..' )
-      end
+      site_names = MrHyde.built_list
 
       unless site_names.empty?
+        puts "site_names is not empty"
         sites_payload = site_names.map do |site_name|
           opts = MrHyde.site_configuration(site_name)
           opts = Jekyll.configuration(opts)

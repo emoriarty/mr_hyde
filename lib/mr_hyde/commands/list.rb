@@ -17,30 +17,22 @@ module MrHyde
         end
 
         def show_built_sites
-          sources_list = Site.list(MrHyde.sources_sites)
-
           if File.exist? MrHyde.destination
-            built_sites = Site.list(MrHyde.destination)
-            built_sites.reject! do |site|
-              site unless sources_list.include?(site)
-            end
-            show_list "Built sites (#{MrHyde.destination})", built_sites
+            show_list "Built sites (#{MrHyde.destination})", Site.built_list
           else
             MrHyde.logger.warn "Still there is not a built site"
           end
         end
 
         def show_sources_sites
-          show_list "Source Sites (#{MrHyde.sources_sites})", Site.list(MrHyde.sources_sites)
+          show_list "Source Sites (#{MrHyde.sources_sites})", Site.sources_list
         end
 
         def show_list(title, list)
-          puts
           MrHyde.logger.info "#{title}\n#{'-' * title.length}"
           list.each do |site|
             MrHyde.logger.info site
           end
-          puts
         end
 
       end

@@ -13,6 +13,7 @@ module MrHyde
         # Options
         def process(args, opts = {})
           MrHyde::Site.build args, opts
+          MrHyde.logger.info "Built process is fisished, you can look the result in '#{MrHyde.destination}' folder"
         end
       end
     end

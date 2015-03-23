@@ -130,6 +130,14 @@ module MrHyde
       Commands::Build.process opts
     end
 
+    def built_list
+      Site.built_list
+    end
+
+    def sources_list
+      Site.sources_list
+    end
+
     private 
 
     def preserve_source_location?(path, opts)
