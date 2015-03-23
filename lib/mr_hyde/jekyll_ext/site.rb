@@ -30,7 +30,6 @@ class Site
       site_names = MrHyde.built_list
 
       unless site_names.empty?
-        puts "site_names is not empty"
         sites_payload = site_names.map do |site_name|
           opts = MrHyde.site_configuration(site_name)
           opts = Jekyll.configuration(opts)
