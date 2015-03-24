@@ -11,6 +11,30 @@ require 'mr_hyde/commands/remove'
 require 'mr_hyde/commands/serve'
 require 'mr_hyde/commands/list'
 
+# Helpers
+def cmd_remove(command)
+  command.syntax "remove name[ name ... n] "
+  command.description "Remove a nested site within Mr.Hyde folder. By default it removes just the built site."
+
+  command.alias(:rm)
+
+  #srm.option "force", "--force", "Don't ask for remove blog"
+  command.option "all", "--all", "Remove all built sites."
+  command.option "full", "--full", "Remove all built and source site/s. This option can be used with the rest of options."
+
+  command.action do |args, options|
+    MrHyde::Commands::Remove.process(args, options)
+  end
+end
+
+def cmd_build(command)
+  command.option "all", "--all", "Builds main site and nested sites. Not applied when building a nested site."
+
+  command.action do |args, options|
+    options['main'] = true if args.length == 0
+    MrHyde::Commands::Build.process args, options
+  end
+end
 
 Mercenary.program(:mrhyde) do |p|
   p.version MrHyde::VERSION
@@ -45,29 +69,14 @@ Mercenary.program(:mrhyde) do |p|
     end
 
     site.command(:remove) do |srm|
-      srm.syntax "remove name[ name ... n] "
-      srm.description "Remove a Jekyll site when on Mr.Hyde root folder. By default it removes just the built site."
-
-      srm.alias(:rm)
-
-      #srm.option "force", "--force", "Don't ask for remove blog"
-      srm.option "all", "--all", "Remove all built sites."
-      srm.option "full", "--full", "Remove all built and source site/s. This option can be used with the rest of options."
-
-      srm.action do |args, options|
-        MrHyde::Commands::Remove.process(args, options)
-      end
+      cmd_remove srm
     end
     
     site.command(:build) do |sbuild|
       sbuild.syntax "build name[ name ... n] "
       sbuild.description "Build the named site or sites. By default if no name is indicated then all sites will be build."
 
-      sbuild.option "all", "--all", "Build all nested sites"
-
-      sbuild.action do |args, options|
-        MrHyde::Commands::Build.process args, options
-      end
+      cmd_build sbuild
     end
   end 
 
@@ -94,13 +103,7 @@ Mercenary.program(:mrhyde) do |p|
   p.command(:build) do |build|
     build.syntax "build [site name]"
     build.description "Build the main site"
-
-    build.option "all", "--all", "Builds main site and nested sites. Not applied when building a nested site."
-
-    build.action do |args, options|
-      options['main'] = true if args.length == 0
-      MrHyde::Commands::Build.process args, options
-    end
+    cmd_build build
   end
   
   p.command(:list) do |list|
@@ -112,6 +115,10 @@ Mercenary.program(:mrhyde) do |p|
     list.action do |args, options|
       MrHyde::Commands::List.process options
     end
+  end
+    
+  p.command(:remove) do |rm|
+    cmd_remove rm
   end
 
   p.action do |args, options|
