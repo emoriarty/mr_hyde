@@ -1,5 +1,4 @@
 require "mr_hyde/command"
-require "mr_hyde/site"
 
 module MrHyde
   module Commands
@@ -11,6 +10,8 @@ module MrHyde
 
           if opts['built']
             show_built_sites
+          elsif opts['draft']
+            show_draft_sites
           else 
             show_sources_sites
           end
@@ -18,14 +19,22 @@ module MrHyde
 
         def show_built_sites
           if File.exist? MrHyde.destination
-            show_list "Built sites (#{MrHyde.destination})", Site.built_list
+            show_list "Built sites (#{MrHyde.destination})", MrHyde.built_list
           else
             MrHyde.logger.warn "Still there is not a built site"
           end
         end
 
+        def show_draft_sites
+          if File.exist? MrHyde.destination
+            show_list "Draft sites (#{MrHyde.sources_sites})", MrHyde.draft_list
+          else
+            show_sources_sites
+          end
+        end
+
         def show_sources_sites
-          show_list "Source Sites (#{MrHyde.sources_sites})", Site.sources_list
+          show_list "Source Sites (#{MrHyde.sources_sites})", MrHyde.sources_list
         end
 
         def show_list(title, list)

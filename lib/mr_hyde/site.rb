@@ -139,6 +139,16 @@ module MrHyde
         end
       end
 
+      def draft_list
+        return sources_list unless File.exist? MrHyde.destination
+        sources = sources_list
+        builts  = built_list
+
+        sources.reject do |site|
+          site if builts.include?(site)
+        end
+      end
+
       def exist?(name, opts)
         File.exist? File.join(@source, name)
       end

@@ -74,7 +74,7 @@ module MrHyde
     end
 
     def has_jekyll_config?
-      File.exist? File.expand_path(source, @config['jekyll_config'])
+      File.exist? File.expand_path(File.join(source, @config['jekyll_config']))
     end
 
     def sources
@@ -136,6 +136,10 @@ module MrHyde
 
     def sources_list
       Site.sources_list
+    end
+
+    def draft_list
+      Site.draft_list
     end
 
     private 

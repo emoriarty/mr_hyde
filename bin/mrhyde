@@ -111,6 +111,7 @@ Mercenary.program(:mrhyde) do |p|
     list.description "Shows a list of all sites within sources."
 
     list.option "built", "--built", "Shows a list of built sites."
+    list.option "draft", "--drafts", "Shows a list of sites not built."
 
     list.action do |args, options|
       MrHyde::Commands::List.process options

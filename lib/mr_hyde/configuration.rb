@@ -28,8 +28,10 @@ module MrHyde
 
       begin
         files.each do |config_file|
-          new_config = read_config_file(config_file)
-          configuration = Jekyll::Utils.deep_merge_hashes(configuration, new_config)
+          if File.exist? config_file
+            new_config = read_config_file(config_file)
+            configuration = Jekyll::Utils.deep_merge_hashes(configuration, new_config)
+          end
         end
       rescue ArgumentError => err
         MrHyde.logger.warn "WARNING:", "Error reading configuration. " +
