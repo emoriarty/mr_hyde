@@ -91,20 +91,25 @@ module MrHyde
           build_main_site(opts) unless File.exist? MrHyde.destination
 
           if opts["all"]
-            build_sites list(MrHyde.sources_sites), opts
+            build_sites sources_list, opts
           elsif args.kind_of? Array
             build_sites args, opts 
           elsif args.kind_of? String
             build_site args, opts
           end
         else
-          # Fetching the list of built sites to rebuild again once the main site has been built
-          if File.exist? MrHyde.destination
-            nested_sites = built_list
+          if opts["all"]
             build_main_site(opts)
-            build_sites nested_sites, opts
+            build_sites sources_list, opts
           else
-            build_main_site(opts)
+            # Fetching the list of built sites to rebuild again once the main site has been built
+            if File.exist? MrHyde.destination
+              nested_sites = built_list
+              build_main_site(opts)
+              build_sites nested_sites, opts
+            else
+              build_main_site(opts)
+            end
           end
         end
       rescue Exception => e

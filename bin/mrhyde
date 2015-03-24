@@ -95,7 +95,7 @@ Mercenary.program(:mrhyde) do |p|
     build.syntax "build"
     build.description "Build the main site"
 
-    build.option "full", "--full", "Builds main site and nested sites."
+    build.option "all", "--all", "Builds main site and nested sites."
 
     build.action do |args, options|
       options['main'] = true
