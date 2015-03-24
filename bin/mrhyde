@@ -92,13 +92,13 @@ Mercenary.program(:mrhyde) do |p|
 
   
   p.command(:build) do |build|
-    build.syntax "build"
+    build.syntax "build [site name]"
     build.description "Build the main site"
 
-    build.option "all", "--all", "Builds main site and nested sites."
+    build.option "all", "--all", "Builds main site and nested sites. Not applied when building a nested site."
 
     build.action do |args, options|
-      options['main'] = true
+      options['main'] = true if args.length == 0
       MrHyde::Commands::Build.process args, options
     end
   end
