@@ -159,8 +159,8 @@ module MrHyde
 
     def create_blank_site(path)
       Dir.chdir(path) do
-        FileUtils.mkdir %w(_layouts _includes main_site) 
-        Dir.chdir(File.join('main_site')) do
+        FileUtils.mkdir %w(_layouts _includes _site) 
+        Dir.chdir(File.join('_site')) do
           FileUtils.touch 'index.html' 
         end
       end
