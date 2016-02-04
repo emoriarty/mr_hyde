@@ -11,7 +11,7 @@ module MrHyde
       'config'        => '_mrhyde.yml',
       'jekyll_config' => '_config.yml',
       'assets'        => '_assets',
-      'mainsite'      => 'main_site',
+      'mainsite'      => '_site',
     })
 
     def read_config_files(files)
