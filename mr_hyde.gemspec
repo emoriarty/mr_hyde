@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["enrique.arias.cervero@gmail.com"]
   spec.summary       = %q{Mr. Hyde lets you generate and manage as many sites as you want.}
   spec.description   = %q{Mr. Hyde lets you generate and manage as many sites as you want, something similar like Medium. It's based on Jekyll.} 
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/emoriarty/mr_hyde"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -22,5 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.4", ">= 5.4.3"
   
-  spec.add_runtime_dependency "jekyll", "~> 2.5", "2.5.3"
+  spec.add_runtime_dependency "jekyll", "~> 3.1", ">=3.1.1"
+  spec.add_runtime_dependency "mercenary", "~> 0.3", ">=0.3.5"
 end
