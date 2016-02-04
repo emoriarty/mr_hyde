@@ -9,7 +9,7 @@ module MrHyde
       def init(args, opts)
         opts = MrHyde.configuration(opts)
         @source = if opts['main']
-                    File.join MrHyde.source, MrHyde.sources
+                    File.join MrHyde.source
                   else
                     File.join MrHyde.source, MrHyde.sources_sites
                   end
@@ -171,7 +171,7 @@ module MrHyde
       end
       
       def is_main?(name)
-        File.directory? File.join(MrHyde.sources, name)
+        File.directory? File.join(name)
       end
 
       private
@@ -185,7 +185,7 @@ module MrHyde
           else
             raise() if is_main?(args)
           end
-        rescue Exception => e
+        rescue
           raise ArgumentError, 'The site\'s name cannot be the same than the main site name'
         end
 

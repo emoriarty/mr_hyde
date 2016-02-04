@@ -32,7 +32,7 @@ describe "MrHyde" do
 
   def remove_site(site, opts = {})
     create_build_remove site, opts
-    File.exist?(File.join @defaults['sources'], @defaults['sources_sites'], site).must_be :==, (opts['full'] ? false : true)
+    File.exist?(File.join @defaults['sources_sites'], site).must_be :==, (opts['full'] ? false : true)
     File.exist?(File.join @defaults['destination'], site).must_be :==, false
   end
   
@@ -42,7 +42,7 @@ describe "MrHyde" do
 
     create_build_remove site_names, opts
     site_names.each do |sn|
-      File.exist?(File.join @defaults['sources'], @defaults['sources_sites'], sn).must_be :==, (opts['full'] ? false : true)
+      File.exist?(File.join @defaults['sources_sites'], sn).must_be :==, (opts['full'] ? false : true)
       File.exist?(File.join @defaults['destination'], sn).must_be :==, false
     end
   end

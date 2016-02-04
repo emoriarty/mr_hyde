@@ -9,7 +9,7 @@ module Converters
 
     def sass_load_paths
       paths = pristine_sass_load_paths
-      common_assets = Jekyll.sanitized_path(File.join(MrHyde.sources, MrHyde.config['assets']), sass_dir)
+      common_assets = Jekyll.sanitized_path(File.join(MrHyde.config['assets']), sass_dir)
       paths << common_assets if File.directory? common_assets
 
       paths

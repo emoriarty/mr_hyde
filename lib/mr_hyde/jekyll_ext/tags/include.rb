@@ -7,14 +7,14 @@ module Tags
   class IncludeTag
 =begin
     def tag_includes_dir
-      File.join MrHyde.sources, MrHyde.config['includes']
+      File.join MrHyde.config['includes']
 =end
 
     def resolved_includes_dir(context)
       path = File.join(File.realpath(context.registers[:site].source), @includes_dir)
 
       unless File.directory? path
-        path = File.join(File.realpath(MrHyde.source), MrHyde.sources, @includes_dir)
+        path = File.join(File.realpath(MrHyde.source), @includes_dir)
       end
 
       path
