@@ -83,7 +83,7 @@ module MrHyde
       #     Hash 
       #       'all' => 'all' Builds all built sites
       #
-      def build(args, opts = {})
+      def build(args = nil, opts = {})
         init(args, opts)
 
         unless opts.delete('main')
@@ -179,9 +179,7 @@ module MrHyde
       def create_site(args, opts = {})
         begin
           if args.kind_of? Array
-            args.each do |name|
-              raise() if is_main(args)
-            end
+            args.each{ |name| raise() if is_main(name) }
           else
             raise() if is_main?(args)
           end
@@ -190,7 +188,6 @@ module MrHyde
         end
 
         MrHyde::Extensions::New.process [File.join(MrHyde.sources_sites, args)], opts
-        MrHyde.logger.info "New #{args} created in #{MrHyde.sources_sites}"
         exist? args, opts
       end
 

@@ -19,6 +19,11 @@ describe "Checking if MrHyde can build sites" do
     FileUtils.remove_dir(@site_name) if File.exist? @site_name
   end
 
+  it "can build the default site (main)" do
+    MrHyde::Site.build
+    File.exist?(@defaults['destination']).must_be :==, true
+  end
+
   it "can build a single site" do
     MrHyde::Site.create @nested_site_name
     MrHyde::Site.build @nested_site_name

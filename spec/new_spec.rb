@@ -57,6 +57,15 @@ describe "Checking if mrhyde can create new sites" do
     lambda { MrHyde.create(@site_name, 'force' => true)}.must_be_silent
   end
 
+  describe "sample files" do
+    it "are generated" do
+      byebug
+      MrHyde.create @site_name
+      File.exist?(File.join @site_name, 'sample-site').must_be :==, true
+      File.exist?(File.join @site_name, 'sample-full-site').must_be :==, true
+    end
+  end
+
   describe "nested sites" do
     before do
       MrHyde.create @site_name
