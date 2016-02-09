@@ -50,4 +50,14 @@ describe "Checking if MrHyde can build sites" do
     end
   end
 
+  describe "building posts" do
+    it "all sites build a post within mrhyde or jekyll dir" do
+      MrHyde::Site.build nil, {'all' => true}
+      MrHyde::Site.built_list.each do |ns|
+        (File.exist?(File.join @defaults['destination'], ns, 'mrhyde') || 
+        File.exist?(File.join @defaults['destination'], ns, 'jekyll')).must_be :==, true
+      end
+    end
+  end
+
 end

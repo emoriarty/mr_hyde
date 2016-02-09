@@ -59,10 +59,9 @@ describe "Checking if mrhyde can create new sites" do
 
   describe "sample files" do
     it "are generated" do
-      byebug
       MrHyde.create @site_name
-      File.exist?(File.join @site_name, 'sample-site').must_be :==, true
-      File.exist?(File.join @site_name, 'sample-full-site').must_be :==, true
+      File.exist?(File.join @site_name, @defaults['sources_sites'], 'sample-site').must_be :==, true
+      File.exist?(File.join @site_name, @defaults['sources_sites'], 'sample-full-site').must_be :==, true
     end
   end
 
