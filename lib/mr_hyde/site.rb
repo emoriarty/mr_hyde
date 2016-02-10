@@ -9,7 +9,7 @@ module MrHyde
       def init(args, opts)
         opts = MrHyde.configuration(opts)
         @source = if opts['main']
-                    File.join MrHyde.source, MrHyde.sources
+                    File.join MrHyde.source
                   else
                     File.join MrHyde.source, MrHyde.sources_sites
                   end
@@ -55,20 +55,17 @@ module MrHyde
       #       'all' => 'all' Removes all built sites
       #       'full' => 'full' Removes built and source site/s
       #
-      def remove(args, opts = {})
+      def remove(args = nil, opts = {})
         init(args, opts)
 
-        if opts['all']
+        if not args.nil? and not args.empty?
+          remove_sites args, opts
+        elsif opts['all']
           list(MrHyde.sources_sites).each do |sm|
             remove_site sm, opts
           end
-        elsif args.kind_of? Array
-          args.each do |sm|
-            remove_site sm, opts
-          end
-        else
-          remove_site args, opts
         end
+        build
       rescue Exception => e
         MrHyde.logger.error "cannot remove the site: #{e}"
       end
@@ -83,35 +80,21 @@ module MrHyde
       #     Hash 
       #       'all' => 'all' Builds all built sites
       #
-      def build(args, opts = {})
+      def build(args = nil, opts = {})
         init(args, opts)
 
-        unless opts.delete('main')
-          # If there is no main site then it is built
-          build_main_site(opts) unless File.exist? MrHyde.destination
+        # If there is no destinarion folder then will be created
+        mk_destination(opts) unless File.exist? MrHyde.destination
 
-          if opts["all"]
-            build_sites sources_list, opts
-          elsif args.kind_of? Array
-            build_sites args, opts 
-          elsif args.kind_of? String
-            build_site args, opts
-          end
-        else
-          if opts["all"]
-            build_main_site(opts)
-            build_sites sources_list, opts
-          else
-            # Fetching the list of built sites to rebuild again once the main site has been built
-            if File.exist? MrHyde.destination
-              nested_sites = built_list
-              build_main_site(opts)
-              build_sites nested_sites, opts
-            else
-              build_main_site(opts)
-            end
-          end
+        if not args.nil? and not args.empty?
+          build_sites args, opts 
+        elsif opts["all"]
+          # Build all sites and after build/rebuild the main site
+          # so all global variables referent to nested site will be loaded
+          build_sites sources_list, opts
         end
+        # By default the main site is built
+        build_main_site(opts)
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
         MrHyde.logger.error e.backtrace
@@ -171,7 +154,7 @@ module MrHyde
       end
       
       def is_main?(name)
-        File.directory? File.join(MrHyde.sources, name)
+        File.directory? File.join(name)
       end
 
       private
@@ -179,24 +162,29 @@ module MrHyde
       def create_site(args, opts = {})
         begin
           if args.kind_of? Array
-            args.each do |name|
-              raise() if is_main(args)
-            end
+            args.each{ |name| raise() if is_main(name) }
           else
             raise() if is_main?(args)
           end
-        rescue Exception => e
+        rescue
           raise ArgumentError, 'The site\'s name cannot be the same than the main site name'
         end
 
         MrHyde::Extensions::New.process [File.join(MrHyde.sources_sites, args)], opts
-        MrHyde.logger.info "New #{args} created in #{MrHyde.sources_sites}"
         exist? args, opts
       end
 
+      def remove_sites(args, opts = {})
+        args = [args] if args.kind_of? String
+
+        args.each do |sm|
+          remove_site sm, opts
+        end
+      end
+
       def remove_site(name, opts = {})
-        # OBSOLOTE
-        # This checking is not mandatory, never can be removed form here the main site
+        # OBSOLETE
+        # This checking is not mandatory, never can be removed from here the main site
         if is_main?(name)
           MrHyde.logger.warning "Cannot remove main site: #{name}"
           return
@@ -213,6 +201,8 @@ module MrHyde
       end
 
       def build_sites(site_names, opts)
+        site_names = [site_names] if site_names.kind_of? String
+
         site_names.each do |sn| 
           begin
             build_site(sn, opts)
@@ -231,9 +221,18 @@ module MrHyde
 
       def build_main_site(opts)
         conf = MrHyde.main_site_configuration
+        keep_built_sites conf
         Jekyll::Commands::Build.process conf
       end
 
+      def keep_built_sites(conf)
+        conf['keep_files'] = built_list
+      end
+
+      def mk_destination(opts)
+        conf = MrHyde.main_site_configuration
+        Dir.mkdir conf["destination"]
+      end
 
       def check_site(site_name, method, message)
         if not send(method, site_name)

@@ -43,7 +43,7 @@ module MrHyde
   
     # Jekyll per site configuration
     # This method gets the config files which must be read from jekyll. 
-    # _config.yml < sources/sites/site/_config.yml < override
+    # _config.yml < sites/site/_config.yml < override
     #
     def site_configuration(site_name = nil)
       jekyll_config = jekyll_defaults(site_name)
@@ -66,23 +66,19 @@ module MrHyde
           'source'      => File.join(MrHyde.sources_sites, site_name) }
       else
         site_name = config['mainsite']
-        { 'source' => File.join(sources, site_name),
+        { 'source' => File.join(site_name),
           'destination' => File.join(MrHyde.destination) }
       end
 
-      conf.merge({ 'layouts' => File.join(MrHyde.sources, config['layouts']) })
+      conf.merge({ 'layouts_dir' => File.join(config['layouts_dir']) })
     end
 
     def has_jekyll_config?
       File.exist? File.expand_path(File.join(source, @config['jekyll_config']))
     end
-
-    def sources
-      config['sources']
-    end
     
     def sources_sites
-      File.join config['sources'], config['sources_sites']
+      File.join config['sources_sites']
     end
 
     def destination
@@ -90,7 +86,7 @@ module MrHyde
     end
 
     def main_site
-      File.join source, sources, config['mainsite']
+      File.join source, config['mainsite']
     end
 
     # Public: Fetch the logger instance for this Jekyll process.
@@ -156,7 +152,6 @@ module MrHyde
       # FileUtils.copy_file(jekyll_config, File.join(path, File.basename(jekyll_config)))
       # Creating the default jekyll site in mrhyde
       Dir.chdir(path) do
-        FileUtils.mkdir(%w(sources)) unless File.exist? 'sources'
         Site.create ['sample-site'], { 'force' => 'force' }
         Site.create ['sample-full-site'], { 'full' => 'full', 'force' => 'force' }
       end
@@ -164,11 +159,8 @@ module MrHyde
 
     def create_blank_site(path)
       Dir.chdir(path) do
-        FileUtils.mkdir('sources')
-        Dir.chdir('sources') do 
-          FileUtils.mkdir %w(_layouts _includes main_site) 
-        end
-        Dir.chdir(File.join('sources', 'main_site')) do
+        FileUtils.mkdir %w(_layouts _includes _site) 
+        Dir.chdir(File.join('_site')) do
           FileUtils.touch 'index.html' 
         end
       end

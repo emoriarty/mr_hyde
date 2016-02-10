@@ -14,3 +14,4 @@
 mkmf.log
 .sass-cache/
 .DS_Store
+.byebug_history

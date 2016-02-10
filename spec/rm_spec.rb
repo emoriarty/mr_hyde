@@ -1,10 +1,9 @@
 require "minitest/autorun"
-require "minitest/pride"
 require "fileutils"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"
 
-describe "MrHyde" do
+describe "Checking is Mr. Hyde remove command" do
   before do
     @tmp_dir = Dir.mktmpdir('mrhyde_new_test')
     @site_name = 'test'
@@ -32,7 +31,7 @@ describe "MrHyde" do
 
   def remove_site(site, opts = {})
     create_build_remove site, opts
-    File.exist?(File.join @defaults['sources'], @defaults['sources_sites'], site).must_be :==, (opts['full'] ? false : true)
+    File.exist?(File.join @defaults['sources_sites'], site).must_be :==, (opts['full'] ? false : true)
     File.exist?(File.join @defaults['destination'], site).must_be :==, false
   end
   
@@ -42,7 +41,7 @@ describe "MrHyde" do
 
     create_build_remove site_names, opts
     site_names.each do |sn|
-      File.exist?(File.join @defaults['sources'], @defaults['sources_sites'], sn).must_be :==, (opts['full'] ? false : true)
+      File.exist?(File.join @defaults['sources_sites'], sn).must_be :==, (opts['full'] ? false : true)
       File.exist?(File.join @defaults['destination'], sn).must_be :==, false
     end
   end
@@ -56,19 +55,19 @@ describe "MrHyde" do
     remove_sites @nested_site_name, 5
   end
 
-  it "can remove all built sites" do
-    remove_sites @nested_site_name, 5, { 'all' => 'all' }
+  it "can remove all built sites with option --all" do
+    remove_sites @nested_site_name, 5, { 'all' => true }
   end
   
-  it "can remove a site completely" do
-    remove_site @nested_site_name, { 'full' => 'full' }
+  it "can remove a site completely with option --full" do
+    remove_site @nested_site_name, { 'full' => true }
   end
 
-  it "can remove a list of sites completely" do
-    remove_sites @nested_site_name, 5, { 'full' => 'full' }
+  it "can remove a list of sites completely with option --full" do
+    remove_sites @nested_site_name, 5, { 'full' => true }
   end
 
-  it "can remove all sites completely" do
-    remove_sites @nested_site_name, 5, { 'all' => 'all', 'full' => 'full' }
+  it "can remove all sites completely (--all and --full)" do
+    remove_sites @nested_site_name, 5, { 'all' => true, 'full' => true }
   end
 end

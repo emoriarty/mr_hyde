@@ -28,6 +28,7 @@ module MrHyde
 
           if options["blank"]
             create_blank_site new_site_path, options
+            Jekyll.logger.info "New jekyll site installed in #{new_site_path}."
           elsif options["full"]
             create_independant_sample_files args, options
           else 
@@ -36,9 +37,9 @@ module MrHyde
             File.open(File.expand_path(initialized_post_name, new_site_path), "w") do |f|
               f.write(scaffold_post_content)
             end
+            Jekyll.logger.info "New jekyll site installed in #{new_site_path}."
           end
 
-          Jekyll.logger.info "New jekyll site installed in #{new_site_path}."
         end
 
         def create_blank_site(path, opts)
@@ -69,7 +70,7 @@ module MrHyde
         def scaffold_path
           "_posts/0000-00-00-welcome-to-mr-hyde.markdown.erb"
         end
-     end
+      end
     end
   end
 end

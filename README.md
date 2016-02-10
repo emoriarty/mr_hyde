@@ -1,10 +1,10 @@
 <img src="https://raw.githubusercontent.com/emoriarty/mr_hyde/master/resources/mrhyde-logo.png" alt="Mr.Hyde logo" height="100"/>
 # MrHyde
-Mr. Hyde lets you generate and manage as many static sites as you like, all nested from a parent site, for example, you can have several nested sites sharing the same assets than the parent site and other nested sites with its own assets.
+Mr. Hyde lets you generate and manage as many static sites as you like, all nested from a parent site, for example, you can have several nested sites sharing the same assets than parent site and other nested sites with its own assets.
 
-All this work thanks to [Jekyll](http://jekyllrb.com) in fact Mr. Hyde wraps Jekyll so if you know Jekyll there is no much to learn about Mr. Hyde.
+All this works thanks to [Jekyll](http://jekyllrb.com) tool, in fact Mr. Hyde wraps Jekyll so if you know Jekyll there is no much to learn about Mr. Hyde.
 
-The current version is based on [Jekyll 2.5.3](https://github.com/jekyll/jekyll/tree/v2.5.3).
+The current version is based on [Jekyll 3.1.1](https://github.com/jekyll/jekyll/tree/v3.1.1).
 
 ## Installation
 
@@ -28,15 +28,15 @@ $ gem install mr_hyde
 
 ## Usage
 
-In order to use Mr. Hyde the first thing you must do is creating the Mr. Hyde rootl folder with the next command:
+In order to use Mr. Hyde the first thing you must do is creating the Mr. Hyde root folder using the next command:
 
 ```bash
-$ mrhyde new [PATH]
+$ mrhyde new [NAME]
 ```
 
-The previuos command creates the basic structure folder in the passed in PATH or in the same folder if no PATH given.
+The previuos command creates the basic structure folder within the new folder NAME, in case the name is not provided then the same folder will be used.
 
-Once created get in the Mr. Hyde root folder and you can execute the next commands:
+Once created cd the Mr. Hyde root folder (or the same if no NAME was given) and you can execute the next commands:
 
 ```bash
 $ cd PATH
