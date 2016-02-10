@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/mr_hyde.svg)](https://badge.fury.io/rb/mr_hyde)
+
 <img src="https://raw.githubusercontent.com/emoriarty/mr_hyde/master/resources/mrhyde-logo.png" alt="Mr.Hyde logo" height="100"/>
 # MrHyde
 Mr. Hyde lets you generate and manage as many static sites as you like, all nested from a parent site, for example, you can have several nested sites sharing the same assets than parent site and other nested sites with its own assets.
