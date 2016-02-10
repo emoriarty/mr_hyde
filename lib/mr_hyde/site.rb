@@ -55,20 +55,17 @@ module MrHyde
       #       'all' => 'all' Removes all built sites
       #       'full' => 'full' Removes built and source site/s
       #
-      def remove(args, opts = {})
+      def remove(args = nil, opts = {})
         init(args, opts)
 
-        if opts['all']
+        if not args.nil? and not args.empty?
+          remove_sites args, opts
+        elsif opts['all']
           list(MrHyde.sources_sites).each do |sm|
             remove_site sm, opts
           end
-        elsif args.kind_of? Array
-          args.each do |sm|
-            remove_site sm, opts
-          end
-        else
-          remove_site args, opts
         end
+        build
       rescue Exception => e
         MrHyde.logger.error "cannot remove the site: #{e}"
       end
@@ -177,9 +174,17 @@ module MrHyde
         exist? args, opts
       end
 
+      def remove_sites(args, opts = {})
+        args = [args] if args.kind_of? String
+
+        args.each do |sm|
+          remove_site sm, opts
+        end
+      end
+
       def remove_site(name, opts = {})
-        # OBSOLOTE
-        # This checking is not mandatory, never can be removed form here the main site
+        # OBSOLETE
+        # This checking is not mandatory, never can be removed from here the main site
         if is_main?(name)
           MrHyde.logger.warning "Cannot remove main site: #{name}"
           return
