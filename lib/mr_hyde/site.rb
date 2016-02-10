@@ -86,32 +86,18 @@ module MrHyde
       def build(args = nil, opts = {})
         init(args, opts)
 
-        unless opts.delete('main')
-          # If there is no main site then it is built
-          build_main_site(opts) unless File.exist? MrHyde.destination
+        # If there is no destinarion folder then will be created
+        mk_destination(opts) unless File.exist? MrHyde.destination
 
-          if opts["all"]
-            build_sites sources_list, opts
-          elsif args.kind_of? Array
-            build_sites args, opts 
-          elsif args.kind_of? String
-            build_site args, opts
-          end
-        else
-          if opts["all"]
-            build_main_site(opts)
-            build_sites sources_list, opts
-          else
-            # Fetching the list of built sites to rebuild again once the main site has been built
-            if File.exist? MrHyde.destination
-              nested_sites = built_list
-              build_main_site(opts)
-              build_sites nested_sites, opts
-            else
-              build_main_site(opts)
-            end
-          end
+        if not args.nil? and not args.empty?
+          build_sites args, opts 
+        elsif opts["all"]
+          # Build all sites and after build/rebuild the main site
+          # so all global variables referent to nested site will be loaded
+          build_sites sources_list, opts
         end
+        # By default the main site is built
+        build_main_site(opts)
       rescue Exception => e
         MrHyde.logger.error "cannot build site: #{e}"
         MrHyde.logger.error e.backtrace
@@ -210,6 +196,8 @@ module MrHyde
       end
 
       def build_sites(site_names, opts)
+        site_names = [site_names] if site_names.kind_of? String
+
         site_names.each do |sn| 
           begin
             build_site(sn, opts)
@@ -228,9 +216,18 @@ module MrHyde
 
       def build_main_site(opts)
         conf = MrHyde.main_site_configuration
+        keep_built_sites conf
         Jekyll::Commands::Build.process conf
       end
 
+      def keep_built_sites(conf)
+        conf['keep_files'] = built_list
+      end
+
+      def mk_destination(opts)
+        conf = MrHyde.main_site_configuration
+        Dir.mkdir conf["destination"]
+      end
 
       def check_site(site_name, method, message)
         if not send(method, site_name)

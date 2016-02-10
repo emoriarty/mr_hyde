@@ -4,7 +4,7 @@ require "fileutils"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"
 
-describe "Checking if MrHyde can build sites" do
+describe "Checking MrHyde build command" do
   before do
     @site_name = 'test'
     @nested_site_name = 'nested_site'
@@ -40,11 +40,11 @@ describe "Checking if MrHyde can build sites" do
     end
   end
 
-  it "can build all sites in sources path" do
+  it "can build all nested sites with --all option" do
     site_names = []
     5.times { |i| site_names << "#{@nested_site_name}_#{i}" }
     MrHyde::Site.create site_names
-    MrHyde::Site.build [], { 'all' => 'all' } 
+    MrHyde::Site.build [], { 'all' => true } 
     site_names.each do |sn|
       File.exist?(File.join @defaults['destination'], sn).must_be :==, true
     end
