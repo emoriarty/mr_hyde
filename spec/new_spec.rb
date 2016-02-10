@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require "minitest/pride"
+require "minitest/reporters"
 require "fileutils"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"

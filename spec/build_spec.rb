@@ -1,8 +1,10 @@
 require "minitest/autorun"
-require "minitest/pride"
+require "minitest/reporters"
 require "fileutils"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"
+
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new, Minitest::Reporters::ProgressReporter.new]
 
 describe "Checking MrHyde build command" do
   before do

@@ -32,6 +32,7 @@ class Site
       unless site_names.empty?
         sites_payload = site_names.map do |site_name|
           opts = MrHyde.site_configuration(site_name)
+          opts['quiet'] = true
           opts = Jekyll.configuration(opts)
           site = Site.new opts
 
