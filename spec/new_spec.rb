@@ -17,6 +17,19 @@ describe "Checking if mrhyde can create new sites" do
     FileUtils.remove_dir(@site_name) if File.exist? @site_name
   end
 
+  it "creates a new MrHyde project in the same dir" do
+    MrHyde.create
+
+    File.exist?(File.join '.', @defaults['config']).must_be :==, true
+    File.exist?(File.join '.', @defaults['jekyll_config']).must_be :==, true
+    File.exist?(File.join '.', @defaults['layouts_dir']).must_be :==, true
+    File.exist?(File.join '.', @defaults['includes_dir']).must_be :==, true
+    File.exist?(File.join '.', @defaults['assets']).must_be :==, true
+    File.exist?(File.join '.', @defaults['mainsite']).must_be :==, true
+    File.exist?(File.join '.', @defaults['sources_sites']).must_be :==, true
+    File.exist?(File.join '.', @defaults['mainsite'], 'index.md').must_be :==, true
+  end
+
   it "creates a new MrHyde folder" do
     MrHyde.create @site_name
     
