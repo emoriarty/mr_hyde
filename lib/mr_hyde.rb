@@ -106,7 +106,7 @@ module MrHyde
     #
     # Throws a SystemExit exception
     #
-    def create(args, opts = {})
+    def create(args = '.', opts = {})
       args = [args] if args.kind_of? String
       new_site_path = File.expand_path(args.join(" "), Dir.pwd)
       FileUtils.mkdir_p new_site_path
