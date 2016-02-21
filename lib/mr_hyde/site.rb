@@ -157,6 +157,12 @@ module MrHyde
         File.directory? File.join(name)
       end
 
+      # Receives an array of files don't want to be removed
+      def keep_files(files, conf)
+        conf['keep_files'] = [] unless conf['keep_files']
+        conf['keep_files'] = conf['keep_files'].concat(files).uniq
+      end
+
       private
 
       def create_site(args, opts = {})
@@ -226,7 +232,7 @@ module MrHyde
       end
 
       def keep_built_sites(conf)
-        conf['keep_files'] = built_list
+        keep_files built_list, conf
       end
 
       def mk_destination(opts)
