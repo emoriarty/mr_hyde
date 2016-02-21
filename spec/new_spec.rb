@@ -21,7 +21,6 @@ describe "Checking if mrhyde can create new sites" do
     MrHyde.create
 
     File.exist?(File.join '.', @defaults['config']).must_be :==, true
-    File.exist?(File.join '.', @defaults['jekyll_config']).must_be :==, true
     File.exist?(File.join '.', @defaults['layouts_dir']).must_be :==, true
     File.exist?(File.join '.', @defaults['includes_dir']).must_be :==, true
     File.exist?(File.join '.', @defaults['assets']).must_be :==, true
@@ -36,7 +35,6 @@ describe "Checking if mrhyde can create new sites" do
     File.exist?(@site_name).must_be :==, true
     File.exist?(File.join @site_name).must_be :==, true
     File.exist?(File.join @site_name, @defaults['config']).must_be :==, true
-    File.exist?(File.join @site_name, @defaults['jekyll_config']).must_be :==, true
     File.exist?(File.join @site_name, @defaults['layouts_dir']).must_be :==, true
     File.exist?(File.join @site_name, @defaults['includes_dir']).must_be :==, true
     File.exist?(File.join @site_name, @defaults['assets']).must_be :==, true

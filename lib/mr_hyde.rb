@@ -52,7 +52,7 @@ module MrHyde
 
       # The order is important here, the last one overrides the previous one
       opts['config'] = []
-      opts['config'] << Jekyll.sanitized_path(source, config['jekyll_config']) if has_jekyll_config?
+      opts['config'] << Jekyll.sanitized_path(source, config['config']) if has_jekyll_config?
       opts['config'] << Site.custom_config(site_name, config) if Site.has_custom_config?(site_name, config)
 
       jekyll_config.merge(opts)
@@ -74,7 +74,7 @@ module MrHyde
     end
 
     def has_jekyll_config?
-      File.exist? File.expand_path(File.join(source, @config['jekyll_config']))
+      File.exist? File.expand_path(File.join(source, @config['config']))
     end
     
     def sources_sites

@@ -8,8 +8,6 @@ module MrHyde
       'source'        => Dir.pwd,
       'destination'   => 'site',
       'sources_sites' => '_sites',
-      'config'        => '_mrhyde.yml',
-      'jekyll_config' => '_config.yml',
       'assets'        => '_assets',
       'mainsite'      => '_site'
     })

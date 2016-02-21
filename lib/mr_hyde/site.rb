@@ -150,7 +150,7 @@ module MrHyde
       end
       
       def custom_config(name, opts)
-        File.join site_path(name), opts['jekyll_config']
+        File.join site_path(name), opts['config']
       end
       
       def is_main?(name)

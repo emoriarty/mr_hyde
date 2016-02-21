@@ -22,6 +22,7 @@ describe "Checking MrHyde build command" do
   end
 
   it "can build the default site (main)" do
+    byebug
     MrHyde::Site.build
     File.exist?(@defaults['destination']).must_be :==, true
   end
