@@ -8,6 +8,7 @@ module MrHyde
       'source'        => Dir.pwd,
       'destination'   => 'site',
       'sources_sites' => '_sites',
+      'config'        => '_config.yml',
       'assets'        => '_assets',
       'mainsite'      => '_site'
     })
