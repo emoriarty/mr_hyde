@@ -14,6 +14,7 @@ module MrHyde
                     File.join MrHyde.source, MrHyde.sources_sites
                   end
         yield if block_given?
+        opts
       end
 
       # Creates the directory and necessary files for the site
@@ -83,8 +84,8 @@ module MrHyde
       def build(args = nil, opts = {})
         init(args, opts)
 
-        # If there is no destinarion folder then will be created
-        mk_destination(opts) unless File.exist? MrHyde.destination
+        # If there is no destination folder then will be created
+        #mk_destination(opts) unless File.exist? MrHyde.destination
 
         if not args.nil? and not args.empty?
           build_sites args, opts 
@@ -157,6 +158,12 @@ module MrHyde
         File.directory? File.join(name)
       end
 
+      # Receives an array of files don't want to be removed
+      def keep_files(files, conf)
+        conf['keep_files'] = [] unless conf['keep_files']
+        conf['keep_files'] = conf['keep_files'].concat(files).uniq
+      end
+
       private
 
       def create_site(args, opts = {})
@@ -212,25 +219,25 @@ module MrHyde
         end
       end
 
-      def build_site(name, opts)
-        conf = MrHyde.site_configuration(name)
+      def build_site(name, opts = nil)
+        conf = MrHyde.site_configuration(name, opts)
         Jekyll::Commands::Build.process conf
         MrHyde.logger.info "#{name} built in #{MrHyde.destination}"
         built? name, opts
       end
 
-      def build_main_site(opts)
-        conf = MrHyde.main_site_configuration
+      def build_main_site(opts = nil)
+        conf = MrHyde.main_site_configuration opts
         keep_built_sites conf
         Jekyll::Commands::Build.process conf
       end
 
       def keep_built_sites(conf)
-        conf['keep_files'] = built_list
+        keep_files built_list, conf
       end
 
       def mk_destination(opts)
-        conf = MrHyde.main_site_configuration
+        conf = MrHyde.main_site_configuration opts
         Dir.mkdir conf["destination"]
       end
 
