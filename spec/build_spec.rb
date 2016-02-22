@@ -1,6 +1,9 @@
 require "minitest/autorun"
 require "minitest/reporters"
+require "nokogiri"
 require "fileutils"
+require "pathname"
+require "yaml"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"
 
@@ -59,6 +62,43 @@ describe "Checking MrHyde build command" do
         (File.exist?(File.join @defaults['destination'], ns, 'mrhyde') || 
         File.exist?(File.join @defaults['destination'], ns, 'jekyll')).must_be :==, true
       end
+    end
+  end
+
+  describe "specifying another configuration file" do
+    def test_for_error 
+      yield
+      'ok'
+    rescue
+      $!
+    end
+
+    it "can build site if config file is in another path" do
+      current_file = Pathname.new(Dir.pwd).join MrHyde.configuration['jekyll_config']
+      #FileUtils.cp(current_file, "..")
+
+      yml_file          = YAML.load_file current_file
+      yml_file['title'] = "Copied file title"
+      new_file          = Pathname.pwd.join("..").join(current_file.basename)
+
+      File.open(new_file.to_s, "w") do |f|
+        f.write yml_file.to_yaml
+      end
+
+      # Building site
+      test_for_error do
+        byebug
+        MrHyde::Site.build([], {'config' => new_file.to_s})
+      end.must_equal 'ok'
+
+      # Checking the title provided by the new config file
+      html_file = Pathname.pwd.join(MrHyde.configuration['destination'], 'index.html')
+      doc       = Nokogiri::HTML Pathname.new(html_file)
+      puts doc
+      res       = doc.search '.row hgroup h1.site-title a'
+
+      puts res
+      res.children.first.to_s.must_equal yml_file['title']
     end
   end
 

@@ -29,6 +29,7 @@ end
 
 def cmd_build(command)
   command.option "all", "--all", "Builds main site and nested sites. Not applied when building a nested site."
+  command.option "config", "--config", "CONFIG_FILE[,CONFIG_FILE2,...]  Custom configuration file."
 
   command.action do |args, options|
     options['main'] = true if args.length == 0

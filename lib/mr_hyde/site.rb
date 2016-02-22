@@ -14,6 +14,7 @@ module MrHyde
                     File.join MrHyde.source, MrHyde.sources_sites
                   end
         yield if block_given?
+        opts
       end
 
       # Creates the directory and necessary files for the site
@@ -81,7 +82,7 @@ module MrHyde
       #       'all' => 'all' Builds all built sites
       #
       def build(args = nil, opts = {})
-        init(args, opts)
+        opts = init(args, opts)
 
         # If there is no destinarion folder then will be created
         mk_destination(opts) unless File.exist? MrHyde.destination
