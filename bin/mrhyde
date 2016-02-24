@@ -46,6 +46,7 @@ end
 def add_build_options(c)
   c.option 'config',  '--config CONFIG_FILE[,CONFIG_FILE2,...]', Array, 'Custom configuration file'
   c.option 'quiet',   '-q', '--quiet', 'Silence output.'
+  c.option 'verbose', '-V', '--verbose', 'Print verbose output.'
 =begin
   c.option 'destination', '-d', '--destination DESTINATION', 'The current folder will be generated into DESTINATION'
   c.option 'source', '-s', '--source SOURCE', 'Custom source directory'
