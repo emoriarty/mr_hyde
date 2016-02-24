@@ -111,11 +111,4 @@ describe "Checking MrHyde build command" do
       fetch_title().must_equal @yml_file['title']
     end
   end
-
-  describe "command option --quiet" do
-    it "won't show logs" do
-      byebug
-      MrHyde::Commands::Build.process(nil, {'quiet'=> true})
-    end
-  end
 end
