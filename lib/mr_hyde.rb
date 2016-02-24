@@ -1,4 +1,5 @@
 require "fileutils"
+require "pathname"
 require "logger"
 
 require "jekyll/log_adapter"
@@ -36,24 +37,26 @@ module MrHyde
     end
     
     # Jekyll Configuration
-    def main_site_configuration
+    def main_site_configuration(opts = nil)
       # The order is important here, the last one overrides the previous ones
-      site_configuration nil
+      site_configuration nil, opts
     end
   
     # Jekyll per site configuration
     # This method gets the config files which must be read from jekyll. 
     # _config.yml < sites/site/_config.yml < override
     #
-    def site_configuration(site_name = nil)
+    def site_configuration(site_name = nil, opts_args = nil)
+      clone_opts_args = opts_args.clone if opts_args
       jekyll_config = jekyll_defaults(site_name)
       site_name ||= config['mainsite']
       opts = {}
 
       # The order is important here, the last one overrides the previous one
       opts['config'] = []
-      opts['config'] << Jekyll.sanitized_path(source, config['jekyll_config']) if has_jekyll_config?
+      opts['config'] << Jekyll.sanitized_path(source, config['config']) if has_jekyll_config?
       opts['config'] << Site.custom_config(site_name, config) if Site.has_custom_config?(site_name, config)
+      opts['config'].concat(Configuration[Configuration::DEFAULTS].config_files(clone_opts_args)) if clone_opts_args and clone_opts_args['config']
 
       jekyll_config.merge(opts)
     end
@@ -63,18 +66,18 @@ module MrHyde
       conf = if site_name
         { 'baseurl'     => '/' + site_name,
           'destination' => File.join(MrHyde.destination, site_name),
-          'source'      => File.join(MrHyde.sources_sites, site_name) }
+          'source'      => Pathname.pwd.join(MrHyde.sources_sites, site_name).to_s }
       else
         site_name = config['mainsite']
-        { 'source' => File.join(site_name),
-          'destination' => File.join(MrHyde.destination) }
+        { 'source' => Pathname.pwd.join(site_name).to_s,
+          'destination' => File.join(MrHyde.destination).to_s }
       end
 
       conf.merge({ 'layouts_dir' => File.join(config['layouts_dir']) })
     end
 
     def has_jekyll_config?
-      File.exist? File.expand_path(File.join(source, @config['jekyll_config']))
+      File.exist? File.expand_path(File.join(source, @config['config']))
     end
     
     def sources_sites
@@ -93,7 +96,7 @@ module MrHyde
     #
     # Returns the LogAdapter instance.
     def logger
-      @logger = LogAdapter.new(Stevenson.new, (ENV['MRHYDE_LOG_LEVEL'] || :info).to_sym)
+      @logger ||= LogAdapter.new(Stevenson.new, (ENV['MRHYDE_LOG_LEVEL'] || :info).to_sym)
     end
 
     def logger=(writer)

@@ -12,6 +12,7 @@ module MrHyde
       class << self
         # Options
         def process(args, opts = {})
+          MrHyde.logger.adjust_verbosity opts
           MrHyde::Site.build args, opts
           MrHyde.logger.info "Built process is finished, you can see the result in '#{MrHyde.destination}' folder"
         end
