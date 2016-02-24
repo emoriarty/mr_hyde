@@ -6,6 +6,7 @@ require "pathname"
 require "yaml"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"
+require_relative "../lib/mr_hyde/commands/build"
 
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new, Minitest::Reporters::ProgressReporter.new]
 
@@ -111,4 +112,10 @@ describe "Checking MrHyde build command" do
     end
   end
 
+  describe "command option --quiet" do
+    it "won't show logs" do
+      byebug
+      MrHyde::Commands::Build.process(nil, {'quiet'=> true})
+    end
+  end
 end

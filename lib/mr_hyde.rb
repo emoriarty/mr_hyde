@@ -96,7 +96,7 @@ module MrHyde
     #
     # Returns the LogAdapter instance.
     def logger
-      @logger = LogAdapter.new(Stevenson.new, (ENV['MRHYDE_LOG_LEVEL'] || :info).to_sym)
+      @logger ||= LogAdapter.new(Stevenson.new, (ENV['MRHYDE_LOG_LEVEL'] || :info).to_sym)
     end
 
     def logger=(writer)

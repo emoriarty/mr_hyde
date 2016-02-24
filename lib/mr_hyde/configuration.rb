@@ -13,6 +13,11 @@ module MrHyde
       'mainsite'      => '_site'
     })
 
+    def config_files(override)
+      MrHyde.logger.adjust_verbosity(:quiet => quiet?(override), :verbose => verbose?(override))
+      super(override)
+    end
+
     def read_config_files(files)
       configuration = clone
 
