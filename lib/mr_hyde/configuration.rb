@@ -8,11 +8,15 @@ module MrHyde
       'source'        => Dir.pwd,
       'destination'   => 'site',
       'sources_sites' => '_sites',
-      'config'        => '_mrhyde.yml',
-      'jekyll_config' => '_config.yml',
+      'config'        => '_config.yml',
       'assets'        => '_assets',
       'mainsite'      => '_site'
     })
+
+    def config_files(override)
+      MrHyde.logger.adjust_verbosity(:quiet => quiet?(override), :verbose => verbose?(override))
+      super(override)
+    end
 
     def read_config_files(files)
       configuration = clone

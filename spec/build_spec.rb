@@ -1,8 +1,12 @@
 require "minitest/autorun"
 require "minitest/reporters"
+require "nokogiri"
 require "fileutils"
+require "pathname"
+require "yaml"
 require_relative "../lib/mr_hyde"
 require_relative "../lib/mr_hyde/site"
+require_relative "../lib/mr_hyde/commands/build"
 
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new, Minitest::Reporters::ProgressReporter.new]
 
@@ -62,4 +66,49 @@ describe "Checking MrHyde build command" do
     end
   end
 
+  describe "specifying another configuration file" do
+    def test_for_error 
+      yield
+      'ok'
+    rescue
+      $!
+    end
+
+    def fetch_title
+      # Checking the title provided by the new config file
+      html_file = Pathname.pwd.join(MrHyde.configuration['destination'], 'index.html')
+      doc       = Nokogiri::HTML Pathname.new(html_file)
+      res       = doc.search '.row hgroup h1.site-title a'
+      res.children.first.to_s
+    end
+
+    before do
+      @current_file      = Pathname.new(Dir.pwd).join MrHyde.configuration['config']
+      @yml_file          = YAML.load_file @current_file
+      @yml_file['title'] = "Copied file title"
+      @new_file          = Pathname.pwd.join("..").join(@current_file.basename)
+
+      File.open(@new_file.to_s, "w") do |f|
+        f.write @yml_file.to_yaml
+      end
+    end
+
+    it "can build site when --config option is used" do
+      # Building site
+      test_for_error do
+        MrHyde::Site.build([], {'config' => @new_file.to_s})
+      end.must_equal 'ok'
+
+      fetch_title().must_equal @yml_file['title']
+    end
+
+    it "can build all sites with --config and --all option" do
+      # Building site
+      test_for_error do
+        MrHyde::Site.build([], {'config' => @new_file.to_s, 'all' => true})
+      end.must_equal 'ok'
+      
+      fetch_title().must_equal @yml_file['title']
+    end
+  end
 end
